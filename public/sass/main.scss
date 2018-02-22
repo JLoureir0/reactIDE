@@ -1,0 +1,167 @@
+$node-padding: 8px;
+$node-size: 6px;
+$node-radius: 7px;
+
+body {
+  background: #efefef;
+  font-family: "Helvetica";
+  font-weight: 200;
+  font-size: 14px;
+}
+
+#myCanvas {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 2000px;
+  height: 2000px;
+}
+
+.block {
+  position: absolute;
+  display: flex;
+}
+
+.block-content {
+  background-color: rgb(163, 187, 206);
+  border: 1px solid rgba(32, 32, 32, 0.3);
+  border-radius: $node-radius;
+  cursor: move;
+  display: flex;
+  flex-direction: column;
+}
+
+.block-selected {
+  .block-content {
+    border: 2px solid rgb(255, 123, 25);
+  }
+}
+
+.block-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.block-body {
+  background-color: white;
+  border-radius: $node-radius;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  display: none;
+  width: 100%;
+  height: 100%;
+}
+
+.console-block {
+  .block-body {
+    color: #EEE;
+    background-color: #333;
+    font-family: "Fira Code";
+    font-size: 10pt;
+    padding: 8px;
+    // border: 1px solid rgba(0, 0, 0, 0.8);
+    border-radius: 4px;
+    margin: 8px;
+  }
+}
+
+.block-body p {
+  margin: 6px;
+}
+
+.block-header-icon,
+.block-header-title,
+.block-header-toggle {
+  padding: $node-padding;
+}
+
+.block-header-toggle {
+  color: #333;
+}
+
+.block-header-icon {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-top-left-radius: $node-radius;
+  border-bottom-left-radius: $node-radius;
+}
+
+.block-expanded {
+  .block-header {
+    border-bottom: 1px solid rgba(32, 32, 32, 0.3);
+  }
+
+  .block-header-icon {
+    border-bottom-left-radius: 0;
+  }
+
+  .block-body {
+    display: block;
+  }
+}
+
+.block a {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+
+  &:hover {
+    color: white;
+  }
+}
+
+.block ul {
+  height: 100%;
+  list-style: none;
+  margin: 0; padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.block li {
+  margin: 0;
+  padding: 0;
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+.block-left-connectors,
+.block-right-connectors {
+  position: absolute;
+  height: 100%;
+  width: 10px;
+}
+
+.block-left-connectors {
+  left: -$node-padding+($node-size/2+1);
+}
+
+.block-right-connectors {
+  right: -$node-padding+($node-size/2);
+}
+
+.red-block {
+  background-color: rgb(230, 143, 144);
+}
+
+.green-block {
+  background-color: rgb(101, 180, 105);
+}
+
+.gray-block {
+  background-color: rgb(200, 200, 200);
+}
+
+.right-node,
+.left-node {
+  background-color: white;
+  border: 1px solid rgba(32, 32, 32, 0.6);
+  border-radius: 100%;
+  width: $node-size;
+  height: $node-size;
+  cursor: pointer;
+
+  &:hover {
+    background-color: orange;
+  }
+}

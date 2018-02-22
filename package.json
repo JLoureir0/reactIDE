@@ -1,0 +1,28 @@
+{
+  "name": "vpl",
+  "version": "0.1.0",
+  "description": "Visual Programming Language Framework",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hugoferreira/vpl.git"
+  },
+  "author": "Hugo Sereno Ferreira",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hugoferreira/vpl/issues"
+  },
+  "homepage": "https://github.com/hugoferreira/vpl#readme",
+  "scripts": {
+    "start": "opn public/main.html && node server.js"
+  },
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-sass": "^1.0.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "opn-cli": "^3.1.0"
+  },
+  "dependencies": {
+    "ws": "^2.2.3"
+  }
+}
