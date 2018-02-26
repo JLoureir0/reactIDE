@@ -1,4 +1,5 @@
 const fs = require('fs');
+const Block = require('./block');
 
 class Model {
     constructor(domainEventBus) {
@@ -8,44 +9,37 @@ class Model {
       this.domainEventBus = domainEventBus;
     }
 
-    createBlock(block) {
-      this.blocks[block.id] = block;
-
-      // Define some sensible defaults.
-      // TODO: Block should probably become a class
-      if (!block.geom) block.geom = {};
-      if (!block.properties) block.properties = {};
-      if (!block.inputs) block.inputs = [];
-      if (!block.outputs) block.outputs = [];
-
-      this.domainEventBus.publish('BLOCK_CREATED', block);
+    createBlock(newBlockInfo) {
+      const block = new Block(newBlockInfo);
+      this.blocks[block.id] = block;     
+      this.domainEventBus.publish('BLOCK_CREATED', newBlockInfo);
     }
 
-    destroyBlock(block) {
-      delete this.blocks[block.id];
-      this.domainEventBus.publish('BLOCK_DESTROYED', block);
+    destroyBlock(blockInfo) {
+      delete this.blocks[blockInfo.id];
+      this.domainEventBus.publish('BLOCK_DESTROYED', blockInfo);
     }
 
-    overrideBlockDetails(block, property, eventId) {
-      const b = this.blocks[block.id];
-      Object.assign(b[property], block[property]);
-      this.domainEventBus.publish(eventId, block);
+    overrideBlockDetails(blockInfo, property, eventId) {
+      const block = this.blocks[blockInfo.id];
+      Object.assign(block[property], blockInfo[property]);
+      this.domainEventBus.publish(eventId, blockInfo);
     }
 
-    changeBlockGeometry(block) {
-      this.overrideBlockDetails(block, 'geom', 'BLOCK_GEOMETRY_CHANGED');
+    changeBlockGeometry(blockInfo) {
+      this.overrideBlockDetails(blockInfo, 'geom', 'BLOCK_GEOMETRY_CHANGED');
     }
 
-    changeBlockProperties(block) {
-      this.overrideBlockDetails(block, 'properties', 'BLOCK_PROPERTIES_CHANGED');
+    changeBlockProperties(blockInfo) {
+      this.overrideBlockDetails(blockInfo, 'properties', 'BLOCK_PROPERTIES_CHANGED');
     }
 
-    changeBlockInputs(block) {
-      this.overrideBlockDetails(block, 'inputs', 'BLOCK_INPUTS_CHANGED');
+    changeBlockInputs(blockInfo) {
+      this.overrideBlockDetails(blockInfo, 'inputs', 'BLOCK_INPUTS_CHANGED');
     }
 
-    changeBlockOutputs(block) {
-      this.overrideBlockDetails(block, 'outputs', 'BLOCK_OUTPUTS_CHANGED');
+    changeBlockOutputs(blockInfo) {
+      this.overrideBlockDetails(blockInfo, 'outputs', 'BLOCK_OUTPUTS_CHANGED');
     }
 
     createLink(link) {
