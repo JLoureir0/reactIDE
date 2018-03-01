@@ -1,5 +1,5 @@
 const fs = require('fs');
-const Block = require('./block');
+const BlockFactory = require('./blockfactory');
 
 class Model {
     constructor(domainEventBus) {
@@ -10,7 +10,7 @@ class Model {
     }
 
     createBlock(newBlockInfo) {
-      const block = new Block(newBlockInfo);
+      const block = BlockFactory.instance.buildBlock(newBlockInfo);
       this.blocks[block.id] = block;     
       this.domainEventBus.publish('BLOCK_CREATED', newBlockInfo);
     }
