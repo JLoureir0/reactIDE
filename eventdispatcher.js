@@ -1,5 +1,7 @@
-class ModelDispatcher {
-  constructor(model, actionBus) {
+class EventDispatcher {
+  constructor(model, actionBus, mqttRouter) {
+
+    // ModelDispatcher
     actionBus.on('CREATE_BLOCK', o => model.createBlock(o));
     actionBus.on('DESTROY_BLOCK', o => model.destroyBlock(o));
     actionBus.on('CHANGE_BLOCK_GEOMETRY', o => model.changeBlockGeometry(o));
@@ -9,7 +11,12 @@ class ModelDispatcher {
     actionBus.on('CREATE_LINK', o => model.createLink(o));
     actionBus.on('CREATE_TYPE', o => model.createType(o));
     actionBus.on('COMMIT', () => model.commit());
+
+    // MqttDispatcher
+    actionBus.on('CHANGE_BLOCK_INPUTS', block => mqttRouter.subscribeInputNodes(block));
+    actionBus.on('CHANGE_BLOCK_OUTPUTS', block => mqttRouter.subscribeOutputNodes(block));
+    actionBus.on('CREATE_LINK', link => mqttRouter.createLink(link))
   }
 }
 
-module.exports = ModelDispatcher;
+module.exports = EventDispatcher;

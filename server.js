@@ -2,13 +2,19 @@ const WSS = require('ws').Server;
 const wss = new WSS({ port: 8081 });
 const EventBus = require('./eventbus').EventBus;
 const Model = require('./model');
-const ModelDispatcher = require('./modeldispatcher');
+const EventDispatcher = require('./eventdispatcher');
+const MqttRouter = require('./mqttrouter');
+
+// MQTT testing
+const MQTT = require('mqtt');
+const mqttClient = MQTT.connect('mqtt://localhost:1883');
 
 function loadmodel(socket) {
   const domainEventBus = new EventBus();
   const actionBus = new EventBus();
   const model = new Model(domainEventBus);
-  const bch = new ModelDispatcher(model, actionBus);
+  const mqttRouter = new MqttRouter(model);
+  const eventDispatcher = new EventDispatcher(model, actionBus, mqttRouter);
 
   actionBus.replay([
     {event: 'CREATE_TYPE', data: {id: "input", icon: "fa fa-code"}},
@@ -118,11 +124,15 @@ wss.on('connection', (socket) => {
 let toggle = false;
 
 setInterval(() => {
-  toggle = !toggle;
+  //toggle = !toggle;
+  
   /* const json = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: toggle?'select-block':'unselect-block', id: 'blockB' } });
 
   wss.clients.forEach((client) => {
     client.send(json);
     console.log(`Sent: ${json}`);
   }); */
+
+  // MQTT test
+  mqttClient.publish('blockA/OUTPUTS/node_1', '2');
 }, 2000);
