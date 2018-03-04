@@ -135,4 +135,5 @@ setInterval(() => {
 
   // MQTT test
   mqttClient.publish('blockA/OUTPUTS/node_1', '2');
+  mqttClient.publish('blockC/TAKE/node_3', '1');
 }, 2000);
