@@ -60,11 +60,6 @@ function loadmodel(socket) {
     {event: 'CREATE_LINK', data: {id: "node_5_node_6", from: {node: "node_5"}, to: {node: "node_6"}}},
 */
 
-    //trigger
-    {event: 'CREATE_BLOCK', data: {id: "blockE", type: "trigger",properties: {name: ""}}},
-    {event: 'CHANGE_BLOCK_GEOMETRY', data: {id: "blockE", geom: {x: 300, y: 500}}},
-    {event: 'CHANGE_BLOCK_OUTPUTS', data: {id: "blockE", outputs: [{id: "node_5"}]}},
-
     //constant 2
     {event: 'CREATE_BLOCK', data: {id: "blockA", type: "input", properties: {name: "2"}}},
     {event: 'CHANGE_BLOCK_GEOMETRY', data: {id: "blockA", geom: {x: 100, y: 100}}},
@@ -78,20 +73,25 @@ function loadmodel(socket) {
     //function +
     {event: 'CREATE_BLOCK', data: {id: "blockC", type: "function", properties: {name: "+"}}},
     {event: 'CHANGE_BLOCK_GEOMETRY', data: {id: "blockC", geom: {x: 300, y: 200}}},
-    {event: 'CHANGE_BLOCK_INPUTS', data: {id: "blockC", inputs: [{id: "node_1"},{id: "node_2"},{id: "node_5"}]}},
-    {event: 'CHANGE_BLOCK_OUTPUTS', data: {id: "blockC", outputs: [{id: "node_3"}]}},
+    {event: 'CHANGE_BLOCK_INPUTS', data: {id: "blockC", inputs: [{id: "node_3"},{id: "node_4"}]}},
+    {event: 'CHANGE_BLOCK_OUTPUTS', data: {id: "blockC", outputs: [{id: "node_5"}, {id: "node_6"}]}},
 
-    //function consola
+    //function console
     {event: 'CREATE_BLOCK', data: {id: "blockD", type: "console"}},
     {event: 'CHANGE_BLOCK_PROPERTIES', data: {id: "blockD", properties: {name: "Output", text: "4"}}},
     {event: 'CHANGE_BLOCK_GEOMETRY', data: {id: "blockD", geom: {x: 500, y: 200, expanded: true, width: 150, height: 150 }}},
-    {event: 'CHANGE_BLOCK_INPUTS', data: {id: "blockD", inputs: [{id: "node_4"}]}},
+    {event: 'CHANGE_BLOCK_INPUTS', data: {id: "blockD", inputs: [{id: "node_7"}]}},
+
+    //trigger
+    {event: 'CREATE_BLOCK', data: {id: "blockE", type: "trigger",properties: {name: "Trigger - 1s"}}},
+    {event: 'CHANGE_BLOCK_GEOMETRY', data: {id: "blockE", geom: {x: 300, y: 500}}},
+    {event: 'CHANGE_BLOCK_OUTPUTS', data: {id: "blockE", outputs: [{id: "node_8"}]}},
   
     //links
     {event: 'CREATE_LINK', data: {id: "node_1_node_3", from: {node: "node_1"}, to: {node: "node_3"}}},
-    {event: 'CREATE_LINK', data: {id: "node_2_node_3", from: {node: "node_2"}, to: {node: "node_3"}}},
-    {event: 'CREATE_LINK', data: {id: "node_3_node_4", from: {node: "node_3"}, to: {node: "node_4"}}},
-    {event: 'CREATE_LINK', data: {id: "node_5_node_3", from: {node: "node_5"}, to: {node: "node_3"}}},
+    {event: 'CREATE_LINK', data: {id: "node_2_node_4", from: {node: "node_2"}, to: {node: "node_4"}}},
+    {event: 'CREATE_LINK', data: {id: "node_5_node_7", from: {node: "node_5"}, to: {node: "node_7"}}},
+    {event: 'CREATE_LINK', data: {id: "node_6_node_8", from: {node: "node_6"}, to: {node: "node_8"}}},
 
     {event: 'COMMIT', data: {}}
   ]);
