@@ -118,6 +118,15 @@ class ModelView {
   }
 
   loadModel() {
+
+    //remove paper children
+    paper.project.activeLayer.removeChildren();
+
+    //remove blocks (+ setup canvas again)
+    let elem = $("#myCanvas").empty();
+    $("#diagram").empty();
+    $("#diagram").append(elem);
+
     for (const block of Object.values(this.model.blocks)) this.drawBlock(block);
     for (const conn of Object.values(this.model.connections)) this.drawConnection(conn);
   }

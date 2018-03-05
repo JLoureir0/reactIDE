@@ -9,10 +9,21 @@ const MqttRouter = require('./mqttrouter');
 const MQTT = require('mqtt');
 const mqttClient = MQTT.connect('mqtt://localhost:1883');
 
+
+
+
+//tirar isto daqui eventualmente...
+const domainEventBus = new EventBus();
+const model = new Model(domainEventBus);
+this.socketTest = null;
+
+
+
+
 function loadmodel(socket) {
-  const domainEventBus = new EventBus();
+  //const domainEventBus = new EventBus();
   const actionBus = new EventBus();
-  const model = new Model(domainEventBus);
+ // const model = new Model(domainEventBus);
   const mqttRouter = new MqttRouter(model);
   const eventDispatcher = new EventDispatcher(model, actionBus, mqttRouter);
 
@@ -78,7 +89,7 @@ function loadmodel(socket) {
 
     //function console
     {event: 'CREATE_BLOCK', data: {id: "blockD", type: "console"}},
-    {event: 'CHANGE_BLOCK_PROPERTIES', data: {id: "blockD", properties: {name: "Output", text: "4"}}},
+    {event: 'CHANGE_BLOCK_PROPERTIES', data: {id: "blockD", properties: {name: "Output", text: ""}}},
     {event: 'CHANGE_BLOCK_GEOMETRY', data: {id: "blockD", geom: {x: 500, y: 200, expanded: true, width: 150, height: 150 }}},
     {event: 'CHANGE_BLOCK_INPUTS', data: {id: "blockD", inputs: [{id: "node_7"}]}},
 
@@ -112,8 +123,11 @@ function parseMessage(message) {
 
 wss.on('connection', (socket) => {
   console.log('Opened connection 🎉');
-
   socket.send(JSON.stringify({ event: 'DEBUG', data: 'ack' }));
+
+  //tirar isto
+  this.socketTest = socket;
+
 
   loadmodel(socket);
 
@@ -123,7 +137,21 @@ wss.on('connection', (socket) => {
 
 let toggle = false;
 
+
+
+//Send model test (client catches on backend.on('DOMAIN_EVENT', (topic, msg) )
 setInterval(() => {
+
+  const json = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'SNAPSHOT', data: JSON.parse(model.toJson()) }});
+
+  try {
+    this.socketTest.send(json);
+    console.log(`Sent: ${json}`);
+  } catch(e) {
+    console.log(e);
+    console.log("Error while deserializing the model.");
+  }
+
   //toggle = !toggle;
   
   /* const json = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: toggle?'select-block':'unselect-block', id: 'blockB' } });
@@ -133,7 +161,7 @@ setInterval(() => {
     console.log(`Sent: ${json}`);
   }); */
 
-  // MQTT test
-//  mqttClient.publish('blockA/OUTPUTS/node_1', '2');
-//  mqttClient.publish('blockC/TAKE/node_3', '1');
+  //  MQTT test
+  //  mqttClient.publish('blockA/OUTPUTS/node_1', '2');
+  //  mqttClient.publish('blockC/TAKE/node_3', '1');
 }, 2000);
