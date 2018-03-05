@@ -22,7 +22,7 @@ class Model {
 
     overrideBlockDetails(blockInfo, property, eventId) {
       const block = this.blocks[blockInfo.id];
-      Object.assign(block[property], blockInfo[property]);
+      block.overrideDetails(blockInfo, property);
       this.domainEventBus.publish(eventId, blockInfo);
     }
 
@@ -62,7 +62,16 @@ class Model {
     }
 
     toJson() {
-      return JSON.stringify(this, (key, val) => { if (key !== "domainEventBus") return val });
+      return JSON.stringify(this, (key, val) => {
+        if (key !== "domainEventBus" && key !== "blocks")
+          return val;
+        if(key === "blocks") {
+          return JSON.parse(JSON.stringify(this.blocks, (k, v) => {
+            if(k !== "mqttClient")
+              return v;
+          }));
+        } 
+        });
     }
 }
 

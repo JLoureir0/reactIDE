@@ -85,7 +85,7 @@ function loadmodel(socket) {
     //trigger
     {event: 'CREATE_BLOCK', data: {id: "blockE", type: "trigger",properties: {name: "Trigger - 1s"}}},
     {event: 'CHANGE_BLOCK_GEOMETRY', data: {id: "blockE", geom: {x: 300, y: 500}}},
-    {event: 'CHANGE_BLOCK_OUTPUTS', data: {id: "blockE", outputs: [{id: "node_8"}]}},
+    {event: 'CHANGE_BLOCK_INPUTS', data: {id: "blockE", inputs: [{id: "node_8"}]}},
   
     //links
     {event: 'CREATE_LINK', data: {id: "node_1_node_3", from: {node: "node_1"}, to: {node: "node_3"}}},
@@ -96,7 +96,7 @@ function loadmodel(socket) {
     {event: 'COMMIT', data: {}}
   ]);
 
-  const json = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'SNAPSHOT', data: model }});
+  const json = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'SNAPSHOT', data: JSON.parse(model.toJson()) }});
 
   try {
     socket.send(json);
@@ -134,6 +134,6 @@ setInterval(() => {
   }); */
 
   // MQTT test
-  mqttClient.publish('blockA/OUTPUTS/node_1', '2');
-  mqttClient.publish('blockC/TAKE/node_3', '1');
+//  mqttClient.publish('blockA/OUTPUTS/node_1', '2');
+//  mqttClient.publish('blockC/TAKE/node_3', '1');
 }, 2000);
