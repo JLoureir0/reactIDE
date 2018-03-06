@@ -145,8 +145,10 @@ setInterval(() => {
   const json = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'SNAPSHOT', data: JSON.parse(model.toJson()) }});
 
   try {
+    if(this.socketTest){
     this.socketTest.send(json);
     console.log(`Sent: ${json}`);
+    }
   } catch(e) {
     console.log(e);
     console.log("Error while deserializing the model.");
