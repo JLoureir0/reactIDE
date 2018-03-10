@@ -3,12 +3,15 @@ In order to successfully compile this project, you will need the following pre-r
 * `node` and `npm`, check this [Getting started guide](https://docs.npmjs.com/getting-started/installing-node);
 * `grunt`, check [Installing Grunt](https://gruntjs.com/installing-grunt);
 * `sass` preprocessor, check [Installing SASS](http://sass-lang.com/install).
+* `docker` check [Install Docker](https://docs.docker.com/install/).
+* `docker-compose` check [Install Docker Compose](https://docs.docker.com/compose/install/)
 
 After that, you can simply:
 
 ```
 $> npm install
 $> grunt
+$> docker-compose up
 $> npm start
 ```
 
