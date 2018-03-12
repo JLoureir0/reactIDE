@@ -13,9 +13,11 @@
   },
   "homepage": "https://github.com/hugoferreira/vpl#readme",
   "scripts": {
-    "start": "opn public/main.html && node server.js"
+    "start": "opn public/main.html && node built/server.js",
+    "build-ts": "tsc"
   },
   "devDependencies": {
+    "@types/node": "^9.4.7",
     "grunt": "^1.0.1",
     "grunt-contrib-concat": "^1.0.1",
     "grunt-contrib-sass": "^1.0.0",
@@ -24,6 +26,8 @@
   },
   "dependencies": {
     "mqtt": "^2.16.0",
+    "ts-map": "^1.0.3",
+    "typescript": "^2.7.2",
     "ws": "^2.2.3"
   }
 }

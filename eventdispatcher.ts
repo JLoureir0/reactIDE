@@ -1,5 +1,19 @@
+import { Model } from "./model";
+import { EventBus } from "./eventbus";
+import { MqttRouter } from "./mqttrouter";
+
+/**
+ * 
+ */
 class EventDispatcher {
-  constructor(model, actionBus, mqttRouter) {
+
+  /**
+   * 
+   * @param model 
+   * @param actionBus 
+   * @param mqttRouter 
+   */
+  constructor(model: Model, actionBus: EventBus, mqttRouter: MqttRouter) {
 
     // ModelDispatcher
     actionBus.on('CREATE_BLOCK', o => model.createBlock(o));
@@ -19,4 +33,4 @@ class EventDispatcher {
   }
 }
 
-module.exports = EventDispatcher;
+export { EventDispatcher };

@@ -1,21 +1,31 @@
 /**
  * Class dependencies
  */
-const MQTT = require('mqtt');
-const mqttClient = MQTT.connect('mqtt://localhost:1883');
+import * as MQTT from 'mqtt';
+import { Model } from './model';
+import { Block } from './block';
 
 /**
  * Class responsible for the routing of the MQTT messages
  * between blocks.
  */
-
 class MqttRouter {
+
+    private model: Model;
+    private nodes: any;
+    private links: any;
+    private reverseLinks: any;
+    private mqttClient: any;
+
     /**
      * Create a MqttRouter.
      *
      * @param {Model} model - The model containing the blocks and theirs links
      */
-    constructor(model) {
+    constructor(model: Model) {
+        //TODO: ter isto como const
+        this.mqttClient = MQTT.connect('mqtt://localhost:1883');
+
         // TODO: links and nodes info should be extracted from model, not efficient enough right now
         this.model = model;
 
@@ -23,7 +33,7 @@ class MqttRouter {
         this.links = {};
         this.reverseLinks = {};
 
-        mqttClient.on('message', (topic, message) => this.routeMessage(topic, message));
+        this.mqttClient.on('message', (topic, message) => this.routeMessage(topic, message));
     };
 
     /**
@@ -32,12 +42,12 @@ class MqttRouter {
      *
      * @param {Block} block - The block that contains the nodes
      */
-    subscribeInputNodes(block) {
-        if(block.id)
-            if(block.inputs)
-                block.inputs.forEach(node => {
-                    mqttClient.subscribe(`${block.id}/TAKE/${node.id}`);
-                    this.nodes[node.id] = block.id;
+    public subscribeInputNodes(block: Block) {
+        if (block.getId)
+            if (block.getInputs)
+                block.getInputs.forEach(node => {
+                    this.mqttClient.subscribe(`${block.getId}/TAKE/${node.id}`);
+                    this.nodes[node.id] = block.getId;
                 });
     };
 
@@ -47,12 +57,12 @@ class MqttRouter {
      *
      * @param {Block} block - The block that contains the nodes
      */
-    subscribeOutputNodes(block) {
-        if(block.id)
-            if(block.outputs)
-                block.outputs.forEach(node => {
-                    mqttClient.subscribe(`${block.id}/OUTPUTS/${node.id}`)
-                    this.nodes[node.id] = block.id;
+    public subscribeOutputNodes(block: Block) {
+        if (block.getId)
+            if (block.getOutputs)
+                block.getOutputs.forEach(node => {
+                    this.mqttClient.subscribe(`${block.getId}/OUTPUTS/${node.id}`)
+                    this.nodes[node.id] = block.getId;
                 });
     };
 
@@ -63,15 +73,15 @@ class MqttRouter {
      * @param {string} topic - Topic that the message was received from
      * @param {Buffer} message - Message that was received
      */
-    routeMessage(topic, message) {
+    public routeMessage(topic: string, message: Buffer) {
         console.log('RECEIVED:');
         console.log(`Topic: ${topic} - Message: ${message.toString()}`);
 
         const topicArray = topic.split('/');
 
-        if(topicArray.length == 3 && topicArray[1] == 'OUTPUTS')
+        if (topicArray.length == 3 && topicArray[1] == 'OUTPUTS')
             this.redirectOutput(topicArray[2], message);
-        if(topicArray.length == 3 && topicArray[1] == 'TAKE')
+        if (topicArray.length == 3 && topicArray[1] == 'TAKE')
             this.redirectTake(topicArray[2], message);
     };
 
@@ -81,11 +91,11 @@ class MqttRouter {
      * @param {string} nodeID - Node that sent the message
      * @param {Buffer} message - message sent
      */
-    redirectOutput(nodeID, message) {
+    public redirectOutput(nodeID: string, message: Buffer) {
         console.log('REDIRECTING TO:');
         console.log(`Topic: ${this.nodes[this.links[nodeID]]}/INPUTS/${this.links[nodeID]} - Message: ${message.toString()}`);
 
-        mqttClient.publish(`${this.nodes[this.links[nodeID]]}/INPUTS/${this.links[nodeID]}`, message);
+        this.mqttClient.publish(`${this.nodes[this.links[nodeID]]}/INPUTS/${this.links[nodeID]}`, message);
     }
 
     /**
@@ -95,11 +105,11 @@ class MqttRouter {
      * @param {string} nodeID - Node that sent the message
      * @param {Buffer} message - message sent
      */
-    redirectTake(nodeID, message) {
+    public redirectTake(nodeID: string, message: Buffer) {
         console.log('REDIRECTING TO:');
         console.log(`Topic: ${this.nodes[this.reverseLinks[nodeID]]}/TAKE/${this.reverseLinks[nodeID]} - Message: ${message.toString()}`);
 
-        mqttClient.publish(`${this.nodes[this.reverseLinks[nodeID]]}/TAKE/${this.reverseLinks[nodeID]}`, message);
+        this.mqttClient.publish(`${this.nodes[this.reverseLinks[nodeID]]}/TAKE/${this.reverseLinks[nodeID]}`, message);
     }
 
     /**
@@ -107,10 +117,10 @@ class MqttRouter {
      *
      * @param {Object} link - Link between two nodes
      */
-    createLink(link) {
-       this.links[link.from.node] = link.to.node;
-       this.reverseLinks[link.to.node] = link.from.node;
+    public createLink(link: any) {
+        this.links[link.from.node] = link.to.node;
+        this.reverseLinks[link.to.node] = link.from.node;
     }
 };
 
-module.exports = MqttRouter;
+export { MqttRouter }
