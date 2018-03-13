@@ -30,31 +30,33 @@ var MqttRouter = /** @class */ (function () {
      * Subscribe the MQTT channels that a block uses to request the data
      * for its input nodes.
      *
-     * @param {Block} block - The block that contains the nodes
+     * @param {{}} block - The block that contains the nodes
      */
     MqttRouter.prototype.subscribeInputNodes = function (block) {
         var _this = this;
-        if (block.getId)
-            if (block.getInputs)
-                block.getInputs.forEach(function (node) {
-                    _this.mqttClient.subscribe(block.getId + "/TAKE/" + node.id);
-                    _this.nodes[node.id] = block.getId;
+        if (block.id) {
+            if (block.inputs) {
+                block.inputs.forEach(function (node) {
+                    _this.mqttClient.subscribe(block.id + "/TAKE/" + node.id);
+                    _this.nodes[node.id] = block.id;
                 });
+            }
+        }
     };
     ;
     /**
      * Subscribe the MQTT channels that a block uses to send the output
      * through its output nodes.
      *
-     * @param {Block} block - The block that contains the nodes
+     * @param {{}} block - The block that contains the nodes
      */
     MqttRouter.prototype.subscribeOutputNodes = function (block) {
         var _this = this;
-        if (block.getId)
-            if (block.getOutputs)
-                block.getOutputs.forEach(function (node) {
-                    _this.mqttClient.subscribe(block.getId + "/OUTPUTS/" + node.id);
-                    _this.nodes[node.id] = block.getId;
+        if (block.id)
+            if (block.outputs)
+                block.outputs.forEach(function (node) {
+                    _this.mqttClient.subscribe(block.id + "/OUTPUTS/" + node.id);
+                    _this.nodes[node.id] = block.id;
                 });
     };
     ;

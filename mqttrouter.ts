@@ -40,29 +40,31 @@ class MqttRouter {
      * Subscribe the MQTT channels that a block uses to request the data
      * for its input nodes.
      *
-     * @param {Block} block - The block that contains the nodes
+     * @param {{}} block - The block that contains the nodes
      */
-    public subscribeInputNodes(block: Block) {
-        if (block.getId)
-            if (block.getInputs)
-                block.getInputs.forEach(node => {
-                    this.mqttClient.subscribe(`${block.getId}/TAKE/${node.id}`);
-                    this.nodes[node.id] = block.getId;
+    public subscribeInputNodes(block: any) {
+        if (block.id){
+            if (block.inputs){
+                block.inputs.forEach(node => {
+                    this.mqttClient.subscribe(`${block.id}/TAKE/${node.id}`);
+                    this.nodes[node.id] = block.id;
                 });
+            }
+        }
     };
 
     /**
      * Subscribe the MQTT channels that a block uses to send the output
      * through its output nodes.
      *
-     * @param {Block} block - The block that contains the nodes
+     * @param {{}} block - The block that contains the nodes
      */
-    public subscribeOutputNodes(block: Block) {
-        if (block.getId)
-            if (block.getOutputs)
-                block.getOutputs.forEach(node => {
-                    this.mqttClient.subscribe(`${block.getId}/OUTPUTS/${node.id}`)
-                    this.nodes[node.id] = block.getId;
+    public subscribeOutputNodes(block: any) {
+        if (block.id)
+            if (block.outputs)
+                block.outputs.forEach(node => {
+                    this.mqttClient.subscribe(`${block.id}/OUTPUTS/${node.id}`)
+                    this.nodes[node.id] = block.id;
                 });
     };
 
