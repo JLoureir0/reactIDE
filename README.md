@@ -11,7 +11,6 @@ After that, you can simply:
 ```
 $> npm install
 $> grunt
-$> tsc
 $> docker-compose up
 $> npm start
 ```
