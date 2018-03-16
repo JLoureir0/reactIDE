@@ -2,6 +2,7 @@
  * Class Dependencies
  */
 import { Block } from "./block";
+import * as BlockTypes from "./blocktypes/exports";
 
 /**
  * 
@@ -17,7 +18,17 @@ class BlockFactory {
    * @param info 
    */
   public buildBlock(info: any) {
-    return new Block(info);
+    return this.getBlock(info);
+  }
+
+  private getBlock(info : any) : Block{
+    switch(info.type){
+      case "input" : return new BlockTypes.BlockNumberInput(info);
+      case "console" : return new BlockTypes.BlockConsole(info);
+      case "function" : return new BlockTypes.BlockSum(info);
+      case "trigger" : return new BlockTypes.BlockTrigger(info);
+    }
+    console.log(info);
   }
 
   /**

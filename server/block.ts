@@ -25,7 +25,7 @@ class Block {
      * @param info 
      */
     constructor(info: any) {
-
+        
         this.mqttClient = MQTT.connect('mqtt://localhost:1883');
         this.id = info.id;
         this.type = info.type;
@@ -34,11 +34,7 @@ class Block {
         (!info.inputs) ? this.inputs = [] : this.inputs = info.inputs;
         (!info.outputs) ? this.outputs = [] : this.outputs = info.outputs;
 
-        if (this.type == "trigger") {
-            this.triggerFunction("work");
-        }
-
-        this.mqttClient.on('message', (topic, message) => this.performAction(message));
+        this.mqttClient.on('message', (topic, message) => this.run(message));
 
         this.subscribeInputs();
         this.subscribeOutputs();
@@ -48,35 +44,8 @@ class Block {
      * 
      * @param message 
      */
-    public performAction(message: string) {
-        if (this.id == "blockC") {
-            if (message == "work") {
-                this.inputblockA = null;
-                this.inputblockB = null;
-                this.publishFromInputs("need inputs!");
-            } else {
-                const x = (message + "").split(" ");
-                if (x[0] == "input") {
-                    this["input" + x[1]] = x[2];
-                }
-                if (this.inputblockA != null && this.inputblockB != null) {
-                    const input1 = parseInt(this.inputblockA);
-                    const input2 = parseInt(this.inputblockB);
-                    if (!isNaN(input1) && !isNaN(input2)) {
-                        const res = input1 + input2;
-                        this.publishFromOutputs("result: " + res);
-                    }
-                }
+    public run(message: string) {
 
-            }
-        } if (this.id == "blockA" || this.id == "blockB") {
-            this.publishFromOutputs("input " + this.id + " " + this.properties['name']);
-        } if (this.id == "blockD") {
-            const y = (message + "").split(" ");
-            if (y[0] == "result:") {
-                this.properties['text'] = parseInt(y[1]);
-            }
-        }
     }
 
     /**
@@ -132,16 +101,6 @@ class Block {
     }
 
     /**
-     * 
-     * @param message 
-     */
-    public triggerFunction(message: string) {
-        setInterval(() => {
-            this.publishFromInputs(message);
-        }, 2000);
-    }
-
-    /**
      * get ID of the block
      */
     get getId(): String {
@@ -154,6 +113,10 @@ class Block {
 
     get getInputs(): any {
         return this.inputs;
+    }
+
+    get getProperties(): any {
+        return this.properties;
     }
 }
 
