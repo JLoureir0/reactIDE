@@ -10,7 +10,7 @@ class BlockConsole extends Block {
 
     public run(topic: string, message: string){
         if(MessagesHandler.getMessageType(message) == MessagesHandler.MessageType.RECEIVEOUTPUT){
-            this.getProperties['text'] = MessagesHandler.getOutputFromMessage(message.toString());
+            this.Properties['text'] = MessagesHandler.getOutputFromMessage(message.toString());
         } else {
             this.publishFromInputs(Messages.pullInputs());
         }

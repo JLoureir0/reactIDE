@@ -23,7 +23,7 @@ class BlockSum extends Block {
             }
         }
 
-        if (this.inputsMap.size == this.getInputs.length) {
+        if (this.inputsMap.size == this.Inputs.length) {
             //if the map has all the necessary inputs, send message
             let res = 0;
             this.inputsMap.forEach((value, key) => {
@@ -32,9 +32,9 @@ class BlockSum extends Block {
             this.publishFromOutputs(Messages.getOutputMessage(res));
         } else {
             //if map is missing any inputs -> pull from any missing inputs
-            for(let i = 0; i < this.getInputs.length; i++){
-                if(this.inputsMap.get(this.getInputs[i].id) == undefined){
-                    this.publishFromInput(this.getInputs[i].id, Messages.pullInputs());
+            for(let i = 0; i < this.Inputs.length; i++){
+                if(this.inputsMap.get(this.Inputs[i].id) == undefined){
+                    this.publishFromInput(this.Inputs[i].id, Messages.pullInputs());
                 }
             }
         }  

@@ -9,7 +9,7 @@ class BlockNumberInput extends Block {
 
     
     public run(topic: string, message: string){
-        this.publishFromOutputs(Messages.getInputMessage(this.getProperties['name']));
+        this.publishFromOutputs(Messages.getInputMessage(this.Properties['name']));
     }
 
 }
