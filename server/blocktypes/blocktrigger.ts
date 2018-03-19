@@ -1,4 +1,5 @@
 import {Block} from '../block'
+import * as Messages from '../messages/messages'
 
 class BlockTrigger extends Block {
 
@@ -6,11 +7,11 @@ class BlockTrigger extends Block {
         super(info);
 
         setInterval(() => {
-            this.publishFromInputs("work");
+            this.publishFromInputs(Messages.getTriggerMessage());
         }, 2000);
     }
 
-    public run(){
+    public run(topic: string, message: string){
 
     }
 }
