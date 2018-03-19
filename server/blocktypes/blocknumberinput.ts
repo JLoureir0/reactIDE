@@ -8,7 +8,7 @@ class BlockNumberInput extends Block {
 
     
     public run(message: string){
-        this.publishFromOutputs("input " + this.getId + " " + this.getProperties['name']);
+        this.publishFromOutputs("input " + this.Id + " " + this.Properties['name']);
     }
 
 }

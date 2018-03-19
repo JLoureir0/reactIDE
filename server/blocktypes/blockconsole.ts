@@ -9,7 +9,7 @@ class BlockConsole extends Block {
     public run(message: string){
         const y = (message + "").split(" ");
             if (y[0] == "result:") {
-                this.getProperties['text'] = parseInt(y[1]);
+                this.Properties['text'] = parseInt(y[1]);
             }
     }
 }

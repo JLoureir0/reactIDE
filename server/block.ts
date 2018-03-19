@@ -103,19 +103,19 @@ class Block {
     /**
      * get ID of the block
      */
-    get getId(): String {
+    get Id(): String {
         return this.id;
     }
 
-    get getOutputs(): any {
+    get Outputs(): any {
         return this.outputs;
     }
 
-    get getInputs(): any {
+    get Inputs(): any {
         return this.inputs;
     }
 
-    get getProperties(): any {
+    get Properties(): any {
         return this.properties;
     }
 }

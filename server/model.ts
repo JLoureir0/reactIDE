@@ -26,7 +26,7 @@ class Model {
 
   public createBlock(newBlockInfo: any) {
     const block = BlockFactory.Instance.buildBlock(newBlockInfo);
-    this.blocks.set(block.getId, block);
+    this.blocks.set(block.Id, block);
     this.domainEventBus.publish('BLOCK_CREATED', newBlockInfo);
   }
 
