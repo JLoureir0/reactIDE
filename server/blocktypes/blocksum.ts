@@ -1,31 +1,43 @@
-import {Block} from '../block'
+import { Block } from '../block'
+import * as Messages from '../messages/messages';
+import * as MessagesHandler from '../messages/messageshandler';
+import TSMAP from 'ts-map'
 
 class BlockSum extends Block {
 
-    constructor(info:any){
+    private numberInputs: Array<number> = new Array();
+    private inputsMap: TSMAP<string, number> = new TSMAP<string, number>();
+
+
+    constructor(info: any) {
         super(info);
     }
 
-    public run(message: string){
-        if (message == "work") {
-            this.inputblockA = null;
-            this.inputblockB = null;
-            this.publishFromInputs("need inputs!");
-        } else {
-            const x = (message + "").split(" ");
-            if (x[0] == "input") {
-                this["input" + x[1]] = x[2];
+    public run(topic: string, message: string) {
+        if(MessagesHandler.getMessageType(message) == MessagesHandler.MessageType.RECEIVEINPUT){
+            const key:string = MessagesHandler.getNodeFromTopic(topic);
+            const valueString:string = MessagesHandler.getInputFromMessage(message);
+            const value:number = parseFloat(valueString);
+            if(!isNaN(value)){
+                this.inputsMap.set(key, value);
             }
-            if (this.inputblockA != null && this.inputblockB != null) {
-                const input1 = parseInt(this.inputblockA);
-                const input2 = parseInt(this.inputblockB);
-                if (!isNaN(input1) && !isNaN(input2)) {
-                    const res = input1 + input2;
-                    this.publishFromOutputs("result: " + res);
+        }
+
+        if (this.inputsMap.size == this.Inputs.length) {
+            //if the map has all the necessary inputs, send message
+            let res = 0;
+            this.inputsMap.forEach((value, key) => {
+                res += value;
+            })
+            this.publishFromOutputs(Messages.getOutputMessage(res));
+        } else {
+            //if map is missing any inputs -> pull from any missing inputs
+            for(let i = 0; i < this.Inputs.length; i++){
+                if(this.inputsMap.get(this.Inputs[i].id) == undefined){
+                    this.publishFromInput(this.Inputs[i].id, Messages.pullInputs());
                 }
             }
-
-        }
+        }  
     }
 }
 

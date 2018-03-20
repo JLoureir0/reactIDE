@@ -16,9 +16,6 @@ class Block {
     private inputs: Array<any>;
     private outputs: Array<any>;
 
-    //TODO tirar isto porque e temporario
-    inputblockA;
-    inputblockB;
 
     /**
      * 
@@ -34,7 +31,7 @@ class Block {
         (!info.inputs) ? this.inputs = [] : this.inputs = info.inputs;
         (!info.outputs) ? this.outputs = [] : this.outputs = info.outputs;
 
-        this.mqttClient.on('message', (topic, message) => this.run(message));
+        this.mqttClient.on('message', (topic, message) => this.run(topic.toString(), message.toString()));
 
         this.subscribeInputs();
         this.subscribeOutputs();
@@ -44,7 +41,7 @@ class Block {
      * 
      * @param message 
      */
-    public run(message: string) {
+    public run(topic:string, message: string) {
 
     }
 
@@ -92,6 +89,20 @@ class Block {
 
     /**
      * 
+     * @param node
+     * @param message 
+     */
+    public publishFromInput(node: string, message: string) {
+        for (let i = 0; i < this.inputs.length; i++) {
+            if(this.inputs[i]['id'] == node){
+                //console.log(this.inputs[i]['id']);
+                this.mqttClient.publish(this.id + "/TAKE/" + this.inputs[i]['id'], message);
+            }
+        }
+    }
+
+    /**
+     * 
      * @param message 
      */
     public publishFromOutputs(message: string) {
@@ -103,19 +114,19 @@ class Block {
     /**
      * get ID of the block
      */
-    get getId(): number {
+    get Id(): number {
         return this.id;
     }
 
-    get getOutputs(): any {
+    get Outputs(): any {
         return this.outputs;
     }
 
-    get getInputs(): any {
+    get Inputs(): any {
         return this.inputs;
     }
 
-    get getProperties(): any {
+    get Properties(): any {
         return this.properties;
     }
 }

@@ -1,4 +1,6 @@
 import {Block} from '../block'
+import * as MessagesHandler from '../messages/messageshandler'
+import * as Messages from '../messages/messages'
 
 class BlockConsole extends Block {
 
@@ -6,11 +8,12 @@ class BlockConsole extends Block {
         super(info);
     }
 
-    public run(message: string){
-        const y = (message + "").split(" ");
-            if (y[0] == "result:") {
-                this.getProperties['text'] = parseInt(y[1]);
-            }
+    public run(topic: string, message: string){
+        if(MessagesHandler.getMessageType(message) == MessagesHandler.MessageType.RECEIVEOUTPUT){
+            this.Properties['text'] = MessagesHandler.getOutputFromMessage(message.toString());
+        } else {
+            this.publishFromInputs(Messages.pullInputs());
+        }
     }
 }
 
