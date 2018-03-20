@@ -10,6 +10,10 @@ class WSBackEnd extends Backend {
   on(topic, callback) {
     this.backend.on(topic, callback);
   }
+
+  send(event, data) {
+    this.backend.send(event, data);
+  }
 }
 
 class MqttBackEnd extends Backend {

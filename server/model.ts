@@ -25,6 +25,10 @@ class Model {
   }
 
   public createBlock(newBlockInfo: any) {
+    if(newBlockInfo.id == 0) {
+      newBlockInfo.id = this.blocks.size + 1;
+    }
+
     const block = BlockFactory.Instance.buildBlock(newBlockInfo);
     this.blocks.set(block.getId, block);
     this.domainEventBus.publish('BLOCK_CREATED', newBlockInfo);
@@ -87,6 +91,10 @@ class Model {
         }));
       }
     });
+  }
+
+  public getLastBlockID() {
+    return this.blocks.size;
   }
 }
 

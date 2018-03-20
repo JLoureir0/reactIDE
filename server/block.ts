@@ -9,7 +9,7 @@ import * as MQTT from 'mqtt';
 class Block {
 
     private mqttClient: any;
-    private id: string;
+    private id: number;
     private type: string;
     private geom: any;
     private properties: any;
@@ -103,7 +103,7 @@ class Block {
     /**
      * get ID of the block
      */
-    get getId(): String {
+    get getId(): number {
         return this.id;
     }
 

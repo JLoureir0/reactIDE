@@ -44,49 +44,43 @@ function loadmodel(socket: any) {
     //{event: 'CREATE_TYPE', data: {id: "anonymous" }},
 
     //constant 2
-    { event: 'CREATE_BLOCK', data: { id: "blockA", type: "input", properties: { name: "2" } } },
-    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: "blockA", geom: { x: 100, y: 100 } } },
-    { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: "blockA", outputs: [{ id: "node_1" }] } },
+    { event: 'CREATE_BLOCK', data: { id: 1, type: "input", properties: { name: "2" } } },
+    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 1, geom: { x: 100, y: 100 } } },
+    { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 1, outputs: [{ id: "node_1" }] } },
 
     //constant 2
-    { event: 'CREATE_BLOCK', data: { id: "blockB", type: "input", properties: { name: "2" } } },
-    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: "blockB", geom: { x: 100, y: 300 } } },
-    { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: "blockB", outputs: [{ id: "node_2" }] } },
+    { event: 'CREATE_BLOCK', data: { id: 2, type: "input", properties: { name: "2" } } },
+    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 2, geom: { x: 100, y: 300 } } },
+    { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 2, outputs: [{ id: "node_2" }] } },
 
     //function +
-    { event: 'CREATE_BLOCK', data: { id: "blockC", type: "function", properties: { name: "+" } } },
-    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: "blockC", geom: { x: 300, y: 200 } } },
-    { event: 'CHANGE_BLOCK_INPUTS', data: { id: "blockC", inputs: [{ id: "node_3" }, { id: "node_4" }] } },
-    { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: "blockC", outputs: [{ id: "node_5" }, { id: "node_6" }] } },
+    { event: 'CREATE_BLOCK', data: { id: 3, type: "function", properties: { name: "+" } } },
+    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 3, geom: { x: 300, y: 200 } } },
+    { event: 'CHANGE_BLOCK_INPUTS', data: { id: 3, inputs: [{ id: "node_3" }, { id: "node_4" }] } },
+    { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 3, outputs: [{ id: "node_5" }, { id: "node_6" }] } },
 
     //function console
-    { event: 'CREATE_BLOCK', data: { id: "blockD", type: "console" } },
-    { event: 'CHANGE_BLOCK_PROPERTIES', data: { id: "blockD", properties: { name: "Output", text: "" } } },
-    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: "blockD", geom: { x: 500, y: 200, expanded: true, width: 150, height: 150 } } },
-    { event: 'CHANGE_BLOCK_INPUTS', data: { id: "blockD", inputs: [{ id: "node_7" }] } },
+    { event: 'CREATE_BLOCK', data: { id: 4, type: "console" } },
+    { event: 'CHANGE_BLOCK_PROPERTIES', data: { id: 4, properties: { name: "Output", text: "" } } },
+    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 4, geom: { x: 500, y: 200, expanded: true, width: 150, height: 150 } } },
+    { event: 'CHANGE_BLOCK_INPUTS', data: { id: 4, inputs: [{ id: "node_7" }] } },
 
     //trigger
-    { event: 'CREATE_BLOCK', data: { id: "blockE", type: "trigger", properties: { name: "Trigger - 1s" } } },
-    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: "blockE", geom: { x: 300, y: 500 } } },
-    { event: 'CHANGE_BLOCK_INPUTS', data: { id: "blockE", inputs: [{ id: "node_8" }] } },
+    { event: 'CREATE_BLOCK', data: { id: 5, type: "trigger", properties: { name: "Trigger - 1s" } } },
+    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 5, geom: { x: 300, y: 500 } } },
+    { event: 'CHANGE_BLOCK_INPUTS', data: { id: 5, inputs: [{ id: "node_8" }] } },
 
     //links
-    { event: 'CREATE_LINK', data: { id: "node_1_node_3", from: { node: "node_1" }, to: { node: "node_3" } } },
-    { event: 'CREATE_LINK', data: { id: "node_2_node_4", from: { node: "node_2" }, to: { node: "node_4" } } },
-    { event: 'CREATE_LINK', data: { id: "node_5_node_7", from: { node: "node_5" }, to: { node: "node_7" } } },
-    { event: 'CREATE_LINK', data: { id: "node_6_node_8", from: { node: "node_6" }, to: { node: "node_8" } } },
+    { event: 'CREATE_LINK', data: { id: 1, from: { node: "node_1" }, to: { node: "node_3" } } },
+    { event: 'CREATE_LINK', data: { id: 2, from: { node: "node_2" }, to: { node: "node_4" } } },
+    { event: 'CREATE_LINK', data: { id: 3, from: { node: "node_5" }, to: { node: "node_7" } } },
+    { event: 'CREATE_LINK', data: { id: 4, from: { node: "node_6" }, to: { node: "node_8" } } },
 
     { event: 'COMMIT', data: {} }
   ]);
 
-  const json = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'SNAPSHOT', data: JSON.parse(model.toJson()) } });
-
-  try {
-    socket.send(json);
-    console.log(`Sent: ${json}`);
-  } catch (e) {
-    console.log("Error while deserializing the model.");
-  }
+  const modelData = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'SNAPSHOT', data: JSON.parse(model.toJson()) } });
+  sendToClient(modelData);
 }
 
 /**
@@ -94,7 +88,8 @@ function loadmodel(socket: any) {
  * @param message 
  */
 function parseMessage(message: string) {
-  console.log(`Received: ${message}`);
+  const json = JSON.parse(message);
+  executeRequest(json);
 }
 
 /**
@@ -122,7 +117,7 @@ setInterval(() => {
 
   const json = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'SNAPSHOT', data: JSON.parse(model.toJson()) } });
 
-  try {
+  /*try {
     if (socketTest) {
       socketTest.send(json);
       console.log(`Sent: ${json}`);
@@ -130,7 +125,7 @@ setInterval(() => {
   } catch (e) {
     console.log(e);
     console.log("Error while deserializing the model.");
-  }
+  }*/
 
   //toggle = !toggle;
 
@@ -145,3 +140,37 @@ setInterval(() => {
   //  mqttClient.publish('blockA/OUTPUTS/node_1', '2');
   //  mqttClient.publish('blockC/TAKE/node_3', '1');
 }, 2000);
+
+/**
+ * Function to execute the client request
+ */
+function executeRequest(json : any) {
+  const actionBus = new EventBus();
+  const mqttRouter = new MqttRouter(model);
+  const eventDispatcher = new EventDispatcher(model, actionBus, mqttRouter);
+
+  actionBus.publish(json.event, json.data);
+
+  if(json.event === "CREATE_BLOCK") {
+    const createdID = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'CREATED_ID', id: model.getLastBlockID() } });
+    sendToClient(createdID);
+  }
+  
+  const modelData = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'SNAPSHOT', data: JSON.parse(model.toJson()) } });
+  sendToClient(modelData);
+}
+
+/**
+ * Function to send data to the client
+ */
+function sendToClient(message : string) {
+  try {
+    if (socketTest) {
+      socketTest.send(message);
+      console.log(`Sent: ${message}`);
+    }
+  } catch (e) {
+    console.log(e);
+    console.log("Error while deserializing the model.");
+  }
+}
