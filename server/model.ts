@@ -62,6 +62,10 @@ class Model {
   }
 
   public createLink(link: any) {
+    if(link.id == 0) {
+      link.id = Object.keys(this.connections).length + 1;
+    }
+
     this.connections[link.id] = link;
     this.domainEventBus.publish('LINK_CREATED', link);
   }

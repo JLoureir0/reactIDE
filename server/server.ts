@@ -154,7 +154,7 @@ function executeRequest(json : any) {
   if(json.event === "CREATE_BLOCK") {
     const createdID = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'CREATED_ID', id: model.getLastBlockID() } });
     sendToClient(createdID);
-  }
+  } 
   
   const modelData = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'SNAPSHOT', data: JSON.parse(model.toJson()) } });
   sendToClient(modelData);
