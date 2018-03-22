@@ -89,6 +89,8 @@ function help() {
     console.log("List of functions to add features to the program:");
     console.log("function_name: 'createBlock'; arguments: 'type ('input'; 'output'; 'console'; 'trigger'), name, coordinateX, coordinateY';\nExample: createBlock('input', '2'); createBlock('input', '2', '100', '100');");
     console.log("function_name: 'changeInputs'; arguments: 'blockID, array of nodes';\nExample: changeInputs(1, ['A', 'B']);");
+    console.log("function_name: 'changeOutputs'; arguments: 'blockID, array of nodes';\nExample: changeOutputs(1, ['A', 'B']);");
+    console.log("function_name: 'changeName'; arguments: 'blockID, name';\nExample: changeName(1, '100');");
     console.log("function_name: 'createLink'; arguments: 'node1, node2';\nExample: createLink('A', 'B');");
     console.log("function_name: 'changeBlockLocation'; arguments: 'blockID, coordinateX, coordinateY';\nExample: changeBlockLocation(1, 100, 200);");
 }
