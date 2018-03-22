@@ -28,7 +28,6 @@ class ModelView {
       // Extract useful stuff about the block
       let temp_type = {}
       this.model.types.forEach((elem) => {
-          console.log(elem)
           if(elem.id === block.type) temp_type = elem;
       });
       const type = temp_type || {};

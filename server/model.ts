@@ -111,7 +111,7 @@ class Model {
     this.connections.set(link.id,link);
 
     if(link.id == 0) {
-      link.id = Object.keys(this.connections).length + 1;
+      link.id = this.connections.size + 1;
     }
 
     this.domainEventBus.publish('LINK_CREATED', link);
