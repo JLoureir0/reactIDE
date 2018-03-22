@@ -10,6 +10,8 @@ import { EventBus } from './eventbus';
 type jsonLink = {id: number, from: {node: string}, to: {node: string}};
 type jsonType = {id: string, icon?: string, style?: string};
 type jsonBlock = {id: number, type: string, properties: {name:string, text?:string}};
+type jsonCompleteBlock = {id: number, type?: string, properties?: {name:string, text?:string}, geom?: {x: number, y: number}, inputs?: Array<{id: string}>, outputs?: Array<{id: string}>};
+
 
 /**
  * 
@@ -62,9 +64,7 @@ class Model {
    * @param property 
    * @param eventId 
    */
-  public overrideBlockDetails(blockInfo: {id: number, type?: string, properties?: {name:string, text?:string}, 
-    geom?: {x: number, y: number}, inputs?: Array<{id: string}>, outputs?: Array<{id: string}>}, 
-    property: string, eventId: string) 
+  public overrideBlockDetails(blockInfo: jsonCompleteBlock, property: string, eventId: string) 
   {
     const block = this.blocks.get(blockInfo.id);
     block.overrideDetails(blockInfo, property);

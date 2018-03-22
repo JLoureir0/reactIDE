@@ -3,6 +3,8 @@
  */
 import * as MQTT from 'mqtt';
 
+type jsonBlock = {id: number, type?: string, properties?: {name:string, text?:string}, geom?: {x: number, y: number}, inputs?: Array<{id: string}>, outputs?: Array<{id: string}>};
+
 /**
  * 
  */
@@ -16,14 +18,11 @@ class Block {
     private inputs?: Array<{id:string}>;
     private outputs?: Array<{id:string}>;
 
-
     /**
      * 
      * @param info 
      */
-    constructor(info: 
-        {id: number, type: string, properties: {name:string, text?:string}, geom?: {x: number, y: number}, 
-        inputs?: Array<{id: string}>, outputs?: Array<{id: string}>}) 
+    constructor(info: jsonBlock) 
     {    
         this.mqttClient = MQTT.connect('mqtt://localhost:1883');
         this.id = info.id;
@@ -54,9 +53,7 @@ class Block {
      * @param info 
      * @param property 
      */
-    public overrideDetails(info: {id: number, type?: string, properties?: {name:string, text?:string}, 
-        geom?: {x: number, y: number}, inputs?: Array<{id: string}>, outputs?: Array<{id: string}>}, 
-        property: string) 
+    public overrideDetails(info: jsonBlock, property: string) 
     {
         this[property] = info[property];
         if (property == "inputs") {

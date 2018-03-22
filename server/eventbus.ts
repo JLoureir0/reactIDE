@@ -3,7 +3,6 @@
  */
 class EventBus {
 
-  //TODO
   private queues: any;
 
   /**
@@ -14,7 +13,7 @@ class EventBus {
   }
 
   /**
-   * TODO
+   * the commands can be of the types: block, type or link
    * @param commands 
    */
   replay(commands: Array<{event: string, data: any}>) {
@@ -27,9 +26,6 @@ class EventBus {
    * @param payload associated data, can be type, link or block
    */
   publish(evt: string, payload: any) {
-
-    //TODO : verificar o tipo das queues
-
     if (evt in this.queues) this.queues[evt].forEach(s => s(payload))
   }
 

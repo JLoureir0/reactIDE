@@ -4,6 +4,8 @@
 import { Block } from "./block";
 import * as BlockTypes from "./blocktypes/exports";
 
+type jsonBlock = {id: number, type: string, properties: {name:string, text?:string}, geom?: {x: number, y: number}, inputs?: Array<{id: string}>, outputs?: Array<{id: string}>};
+
 /**
  * 
  */
@@ -17,16 +19,12 @@ class BlockFactory {
    * Build a block with the received info
    * @param info 
    */
-  public buildBlock(info: 
-    {id: number, type: string, properties: {name:string, text?:string}, geom?: {x: number, y: number}, 
-    inputs?: Array<{id: string}>, outputs?: Array<{id: string}>}) 
+  public buildBlock(info: jsonBlock) 
   {
     return this.getBlock(info);
   }
 
-  private getBlock(info : 
-    {id: number, type: string, properties: {name:string, text?:string}, geom?: {x: number, y: number}, 
-    inputs?: Array<{id: string}>, outputs?: Array<{id: string}>}) : Block
+  private getBlock(info : jsonBlock) : Block
   {
     switch(info.type){
       case "input" : return new BlockTypes.BlockNumberInput(info);
