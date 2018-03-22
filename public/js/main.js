@@ -2,8 +2,10 @@ const backend = new WSBackEnd(config.backendUrl);
 const modelview = new ModelView(backend);
 
 function createBlock(type, name) {
-    console.log("entrei aqui");
-    const block = { event: 'CREATE_BLOCK', data: { id: "0", type: type, properties: { name: name } } };
+    if(typeof type == undefined || typeof name == undefined || arguments.length != 2)
+        return console.log("Error: Wrong inputs.");
+
+    const block = { event: 'CREATE_BLOCK', data: { id: 0, type: type, properties: { name: name } } };
 
     backend.send(block.event, block.data);
     backend.on('DOMAIN_EVENT', (topic, msg) => {
@@ -14,7 +16,10 @@ function createBlock(type, name) {
 }
 
 function createBlock(type, name, x, y) {
-    const block = { event: 'CREATE_BLOCK', data: { id: "0", type: type, properties: { name: name } } };
+    if(typeof type == undefined || typeof name == undefined || typeof x == undefined || typeof y == undefined || arguments.length != 4) 
+        return console.log("Error: Wrong inputs.");
+
+    const block = { event: 'CREATE_BLOCK', data: { id: 0, type: type, properties: { name: name } } };
 
     backend.send(block.event, block.data);
     backend.on('DOMAIN_EVENT', (topic, msg) => {
@@ -26,9 +31,68 @@ function createBlock(type, name, x, y) {
       });
 }
 
+function changeInputs(blockID, inputs) {
+    if(!Number.isInteger(blockID) || typeof blockID == undefined || typeof inputs == undefined || arguments.length != 2)
+        return console.log("Error: Wrong inputs.");
+
+    var inputsParsed = [];
+    for(var i in inputs) {
+        inputsParsed.push({
+            "id" : inputs[i]
+        });
+    }
+
+    const request = { event: 'CHANGE_BLOCK_INPUTS', data: { id: blockID, inputs: inputsParsed } };
+    backend.send(request.event, request.data);
+}
+
+function changeOutputs(blockID, outputs) {
+    if(!Number.isInteger(blockID) || typeof blockID == undefined || typeof outputs == undefined || arguments.length != 2)
+        return console.log("Error: Wrong inputs.");
+
+    var outputsParsed = [];
+    for(var i in outputs) {
+        outputsParsed.push({
+            "id" : outputs[i]
+        });
+    }
+
+    const request = { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: blockID, outputs: outputsParsed } };
+    backend.send(request.event, request.data);
+}
+
+function changeName(blockID, name) {
+    if(!Number.isInteger(blockID) || typeof blockID == undefined || typeof name == undefined || arguments.length != 2)
+        return console.log("Error: Wrong inputs.");
+
+    const request = { event: 'CHANGE_BLOCK_PROPERTIES', data: { id: blockID, properties: { name: name } } };
+    backend.send(request.event, request.data);
+}
+
+function createLink(nodeA, nodeB) {
+    if(typeof nodeA == undefined || typeof nodeB == undefined || arguments.length != 2) 
+        return console.log("Error: Wrong inputs.");
+
+    const request = { event: 'CREATE_LINK', data: { id: 0, from: { node: nodeA }, to: { node: nodeB } } };
+    backend.send(request.event, request.data);
+}
+
+function changeBlockLocation(blockID, x, y) {
+    if(!Number.isInteger(blockID) || typeof blockID == undefined || typeof x == undefined || typeof y == undefined || arguments.length != 3)
+        return console.log("Error: Wrong inputs.");
+
+    const request = { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: blockID, geom: { x: x, y: y } } };
+    backend.send(request.event, request.data);
+}
+
 function help() {
     console.log("List of functions to add features to the program:");
     console.log("function_name: 'createBlock'; arguments: 'type ('input'; 'output'; 'console'; 'trigger'), name, coordinateX, coordinateY';\nExample: createBlock('input', '2'); createBlock('input', '2', '100', '100');");
+    console.log("function_name: 'changeInputs'; arguments: 'blockID, array of nodes';\nExample: changeInputs(1, ['A', 'B']);");
+    console.log("function_name: 'changeOutputs'; arguments: 'blockID, array of nodes';\nExample: changeOutputs(1, ['A', 'B']);");
+    console.log("function_name: 'changeName'; arguments: 'blockID, name';\nExample: changeName(1, '100');");
+    console.log("function_name: 'createLink'; arguments: 'node1, node2';\nExample: createLink('A', 'B');");
+    console.log("function_name: 'changeBlockLocation'; arguments: 'blockID, coordinateX, coordinateY';\nExample: changeBlockLocation(1, 100, 200);");
 }
 
 /*

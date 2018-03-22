@@ -109,6 +109,11 @@ class Model {
    */
   public createLink(link: jsonLink) {
     this.connections.set(link.id,link);
+
+    if(link.id == 0) {
+      link.id = Object.keys(this.connections).length + 1;
+    }
+
     this.domainEventBus.publish('LINK_CREATED', link);
   }
 
