@@ -8,26 +8,30 @@ import * as MQTT from 'mqtt';
  */
 class Block {
 
-    private mqttClient: any;
+    private mqttClient: MQTT.Client;
     private id: number;
     private type: string;
-    private geom: any;
-    private properties: any;
-    private inputs: Array<any>;
-    private outputs: Array<any>;
+    private geom?: {x:number,y:number};
+    private properties?: {name:string, text?:string};
+    private inputs?: Array<{id:string}>;
+    private outputs?: Array<{id:string}>;
 
 
     /**
      * 
      * @param info 
      */
-    constructor(info: any) {
-        
+    constructor(info: 
+        {id: number, type: string, properties: {name:string, text?:string}, geom?: {x: number, y: number}, 
+        inputs?: Array<{id: string}>, outputs?: Array<{id: string}>}) 
+    {    
         this.mqttClient = MQTT.connect('mqtt://localhost:1883');
         this.id = info.id;
         this.type = info.type;
-        (!info.geom) ? this.geom = {} : this.geom = info.geom;
-        (!info.properties) ? this.properties = {} : this.properties = info.properties;
+
+        //TODO mudar isto
+        (!info.geom) ? this.geom = null : this.geom = info.geom;
+        (!info.properties) ? this.properties = null : this.properties = info.properties;
         (!info.inputs) ? this.inputs = [] : this.inputs = info.inputs;
         (!info.outputs) ? this.outputs = [] : this.outputs = info.outputs;
 
@@ -41,7 +45,7 @@ class Block {
      * 
      * @param message 
      */
-    public run(topic:string, message: string) {
+    public run(topic: string, message: string) {
 
     }
 
@@ -50,7 +54,10 @@ class Block {
      * @param info 
      * @param property 
      */
-    public overrideDetails(info: any, property: string) {
+    public overrideDetails(info: {id: number, type?: string, properties?: {name:string, text?:string}, 
+        geom?: {x: number, y: number}, inputs?: Array<{id: string}>, outputs?: Array<{id: string}>}, 
+        property: string) 
+    {
         this[property] = info[property];
         if (property == "inputs") {
             this.subscribeInputs();
@@ -118,15 +125,15 @@ class Block {
         return this.id;
     }
 
-    get Outputs(): any {
+    get Outputs(): Array<{id: string}> {
         return this.outputs;
     }
 
-    get Inputs(): any {
+    get Inputs(): Array<{id: string}> {
         return this.inputs;
     }
 
-    get Properties(): any {
+    get Properties(): {name: string, text?: string} {
         return this.properties;
     }
 }

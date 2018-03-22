@@ -9,7 +9,8 @@ class BlockSum extends Block {
     private inputsMap: TSMAP<string, number> = new TSMAP<string, number>();
 
 
-    constructor(info: any) {
+    constructor(info: {id: number, type: string, properties: {name:string, text?:string}, 
+        geom?: {x: number, y: number}, inputs?: Array<{id: string}>, outputs?: Array<{id: string}>}) {
         super(info);
     }
 

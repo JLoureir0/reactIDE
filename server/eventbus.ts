@@ -3,7 +3,8 @@
  */
 class EventBus {
 
-  private queues;
+  //TODO
+  private queues: any;
 
   /**
    * 
@@ -13,28 +14,31 @@ class EventBus {
   }
 
   /**
-   * 
+   * TODO
    * @param commands 
    */
-  replay(commands) {
+  replay(commands: Array<{event: string, data: any}>) {
     commands.forEach(c => this.publish(c.event, c.data));
   }
 
   /**
    * 
-   * @param evt 
-   * @param payload 
+   * @param evt name of the event
+   * @param payload associated data, can be type, link or block
    */
-  publish(evt, payload) {
+  publish(evt: string, payload: any) {
+
+    //TODO : verificar o tipo das queues
+
     if (evt in this.queues) this.queues[evt].forEach(s => s(payload))
   }
 
   /**
    * 
    * @param evt 
-   * @param callback 
+   * @param callback
    */
-  on(evt, callback) {
+  on(evt: string, callback: any) {
     if (!(evt in this.queues)) this.queues[evt] = []
     this.queues[evt].push(callback)
   }
@@ -42,9 +46,9 @@ class EventBus {
   /**
    * 
    * @param evt 
-   * @param callback 
+   * @param callback
    */
-  off(evt, callback) {
+  off(evt: string, callback: any) {
     if (!(evt in this.queues)) this.queues[evt] = []
     this.queues[evt] = this.queues[evt].filter(cb => cb !== callback);
   }
@@ -55,7 +59,7 @@ class EventBus {
  */
 class EventSourcedBus extends EventBus {
 
-  private journal;
+  private journal: Array<{event: string, data: any}>;
 
   /**
    * 
@@ -77,7 +81,7 @@ class EventSourcedBus extends EventBus {
    * @param evt 
    * @param payload 
    */
-  public publish(evt, payload) {
+  public publish(evt: string, payload: any) {
     this.journal.push({ event: evt, data: payload });
     super.publish(evt, payload);
   }

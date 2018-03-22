@@ -24,7 +24,7 @@ let socketTest = null;
  * 
  * @param socket 
  */
-function loadmodel(socket: any) {
+function loadmodel(socket: WS) {
 
   //const domainEventBus = new EventBus();
   const actionBus = new EventBus();
@@ -95,7 +95,7 @@ function parseMessage(message: string) {
 /**
  * 
  */
-wss.on('connection', (socket) => {
+wss.on('connection', (socket: WS) => {
   console.log('Opened connection 🎉');
   socket.send(JSON.stringify({ event: 'DEBUG', data: 'ack' }));
 
@@ -144,7 +144,7 @@ setInterval(() => {
 /**
  * Function to execute the client request
  */
-function executeRequest(json : any) {
+function executeRequest(json : {event:string, data:any}) {
   const actionBus = new EventBus();
   const mqttRouter = new MqttRouter(model);
   const eventDispatcher = new EventDispatcher(model, actionBus, mqttRouter);

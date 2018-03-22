@@ -12,10 +12,10 @@ import { Block } from './block';
 class MqttRouter {
 
     private model: Model;
-    private nodes: any;
-    private links: any;
-    private reverseLinks: any;
-    private mqttClient: any;
+    private nodes: Array<number>;
+    private links: Array<string>;
+    private reverseLinks: Array<string>;
+    private mqttClient: MQTT.Client;
 
     /**
      * Create a MqttRouter.
@@ -29,9 +29,9 @@ class MqttRouter {
         // TODO: links and nodes info should be extracted from model, not efficient enough right now
         this.model = model;
 
-        this.nodes = {};
-        this.links = {};
-        this.reverseLinks = {};
+        this.nodes = [];
+        this.links = [];
+        this.reverseLinks = [];
 
         this.mqttClient.on('message', (topic, message) => this.routeMessage(topic, message));
     };
@@ -42,7 +42,7 @@ class MqttRouter {
      *
      * @param {{}} block - The block that contains the nodes
      */
-    public subscribeInputNodes(block: any) {
+    public subscribeInputNodes(block: {id: number, inputs: Array<{id: string}>}) {
         if (block.id){
             if (block.inputs){
                 block.inputs.forEach(node => {
@@ -59,7 +59,7 @@ class MqttRouter {
      *
      * @param {{}} block - The block that contains the nodes
      */
-    public subscribeOutputNodes(block: any) {
+    public subscribeOutputNodes(block: {id: number, outputs: Array<{id: string}>}) {
         if (block.id)
             if (block.outputs)
                 block.outputs.forEach(node => {
@@ -119,7 +119,7 @@ class MqttRouter {
      *
      * @param {Object} link - Link between two nodes
      */
-    public createLink(link: any) {
+    public createLink(link: {id: number, from: {node: string}, to: {node: string}}) {
         this.links[link.from.node] = link.to.node;
         this.reverseLinks[link.to.node] = link.from.node;
     }

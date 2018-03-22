@@ -17,11 +17,17 @@ class BlockFactory {
    * Build a block with the received info
    * @param info 
    */
-  public buildBlock(info: any) {
+  public buildBlock(info: 
+    {id: number, type: string, properties: {name:string, text?:string}, geom?: {x: number, y: number}, 
+    inputs?: Array<{id: string}>, outputs?: Array<{id: string}>}) 
+  {
     return this.getBlock(info);
   }
 
-  private getBlock(info : any) : Block{
+  private getBlock(info : 
+    {id: number, type: string, properties: {name:string, text?:string}, geom?: {x: number, y: number}, 
+    inputs?: Array<{id: string}>, outputs?: Array<{id: string}>}) : Block
+  {
     switch(info.type){
       case "input" : return new BlockTypes.BlockNumberInput(info);
       case "console" : return new BlockTypes.BlockConsole(info);

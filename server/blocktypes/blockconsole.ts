@@ -4,7 +4,9 @@ import * as Messages from '../messages/messages'
 
 class BlockConsole extends Block {
 
-    constructor(info:any){
+    constructor(info: {id: number, type: string, properties: {name:string, text?:string}, 
+        geom?: {x: number, y: number}, inputs?: Array<{id: string}>, outputs?: Array<{id: string}>})
+    {
         super(info);
     }
 

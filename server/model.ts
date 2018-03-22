@@ -7,24 +7,37 @@ import { Block } from './block';
 import TsMap from "ts-map";
 import { EventBus } from './eventbus';
 
+type jsonLink = {id: number, from: {node: string}, to: {node: string}};
+type jsonType = {id: string, icon?: string, style?: string};
+type jsonBlock = {id: number, type: string, properties: {name:string, text?:string}};
+
 /**
  * 
  */
 class Model {
 
-  private blocks: any;
-  private connections: any;
-  private types: any;
+  private blocks: TsMap<number,Block>;
+  private connections: TsMap<number,jsonLink>;
+  private types: TsMap<string,jsonType>;
   private domainEventBus: EventBus;
 
+  /**
+   * 
+   * @param domainEventBus 
+   */
   constructor(domainEventBus: EventBus) {
     this.blocks = new TsMap();
-    this.connections = {};
-    this.types = {};
+    this.connections = new TsMap();
+    this.types = new TsMap();
     this.domainEventBus = domainEventBus;
   }
 
-  public createBlock(newBlockInfo: any) {
+  /**
+   * 
+   * @param newBlockInfo 
+   */
+  public createBlock(newBlockInfo: jsonBlock) {
+
     if(newBlockInfo.id == 0) {
       newBlockInfo.id = this.blocks.size + 1;
     }
@@ -34,65 +47,127 @@ class Model {
     this.domainEventBus.publish('BLOCK_CREATED', newBlockInfo);
   }
 
-  public destroyBlock(blockInfo: any) {
+  /**
+   * 
+   * @param blockInfo 
+   */
+  public destroyBlock(blockInfo: jsonBlock) {
     this.blocks.delete(blockInfo.id);
     this.domainEventBus.publish('BLOCK_DESTROYED', blockInfo);
   }
 
-  public overrideBlockDetails(blockInfo: any, property: string, eventId: string) {
+  /**
+   * 
+   * @param blockInfo 
+   * @param property 
+   * @param eventId 
+   */
+  public overrideBlockDetails(blockInfo: {id: number, type?: string, properties?: {name:string, text?:string}, 
+    geom?: {x: number, y: number}, inputs?: Array<{id: string}>, outputs?: Array<{id: string}>}, 
+    property: string, eventId: string) 
+  {
     const block = this.blocks.get(blockInfo.id);
     block.overrideDetails(blockInfo, property);
     this.domainEventBus.publish(eventId, blockInfo);
   }
 
-  public changeBlockGeometry(blockInfo: any) {
+  /**
+   * 
+   * @param blockInfo 
+   */
+  public changeBlockGeometry(blockInfo: {id: number, geom: {x: number, y: number}}) {
     this.overrideBlockDetails(blockInfo, 'geom', 'BLOCK_GEOMETRY_CHANGED');
   }
 
-  public changeBlockProperties(blockInfo: any) {
+  /**
+   * 
+   * @param blockInfo 
+   */
+  public changeBlockProperties(blockInfo: {id: number, properties:{name:string, text:string}}) {
     this.overrideBlockDetails(blockInfo, 'properties', 'BLOCK_PROPERTIES_CHANGED');
   }
 
-  public changeBlockInputs(blockInfo: any) {
+  /**
+   * 
+   * @param blockInfo 
+   */
+  public changeBlockInputs(blockInfo: {id: number, inputs: Array<{id: string}>}) {
     this.overrideBlockDetails(blockInfo, 'inputs', 'BLOCK_INPUTS_CHANGED');
   }
 
-  public changeBlockOutputs(blockInfo: any) {
+  /**
+   * 
+   * @param blockInfo 
+   */
+  public changeBlockOutputs(blockInfo: {id: number, outputs: Array<{id: string}>}) {
     this.overrideBlockDetails(blockInfo, 'outputs', 'BLOCK_OUTPUTS_CHANGED');
   }
 
-  public createLink(link: any) {
-    this.connections[link.id] = link;
+  /**
+   * 
+   * @param link 
+   */
+  public createLink(link: jsonLink) {
+    this.connections.set(link.id,link);
     this.domainEventBus.publish('LINK_CREATED', link);
   }
 
-  public createType(type: any) {
-    this.types[type.id] = type;
+  /**
+   * 
+   * @param type 
+   */
+  public createType(type: jsonType) {
+    this.types.set(type.id,type);
     this.domainEventBus.publish('TYPE_CREATED', type);
   }
 
-  public destroyLink(link: any) {
-    delete this.connections[link.id];
+  /**
+   * 
+   * @param link 
+   */
+  public destroyLink(link: jsonLink) {
+    this.connections.delete(link.id);
     this.domainEventBus.publish('LINK_DESTROYED', link);
   }
 
+  /**
+   * 
+   */
   public commit() {
     fs.writeFileSync('model.json', this.toJson(), 'utf-8');
   }
 
+  /**
+   * 
+   */
   public toJson() {
     return JSON.stringify(this, (key, val) => {
-      if (key !== "domainEventBus" && key !== "blocks")
-        return val;
       if (key === "blocks") {
         return JSON.parse(JSON.stringify(this.blocks.values(), (k, v) => {
           if (k !== "mqttClient")
             return v;
         }));
       }
+      else if(key === "connections"){
+        return JSON.parse(JSON.stringify(this.connections.values(), (k, v) => {
+          return v;
+        }));
+      }
+      else if(key === "types"){
+        return JSON.parse(JSON.stringify(this.types.values(), (k, v) => {
+          return v;
+        }));
+      }
+      else if(key !== "domainEventBus"){
+        return val;
+      }
+
     });
   }
 
+  /**
+   * 
+   */
   public getLastBlockID() {
     return this.blocks.size;
   }

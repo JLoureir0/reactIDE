@@ -26,7 +26,13 @@ class ModelView {
       if (!block.geom) block.geom = {};
 
       // Extract useful stuff about the block
-      const type = this.model.types[block.type] || {};
+      let temp_type = {}
+      this.model.types.forEach((elem) => {
+          console.log(elem)
+          if(elem.id === block.type) temp_type = elem;
+      });
+      const type = temp_type || {};
+
       const geometry = block.geom;
       const properties = block.properties || {};
 
