@@ -29,7 +29,7 @@ class BlockFactory {
     switch(info.type){
       case "input" : return new BlockTypes.BlockNumberInput(info);
       case "console" : return new BlockTypes.BlockConsole(info);
-      case "function" : return new BlockTypes.BlockSum(info);
+      case "function" : return new BlockTypes.BlockArithmetic(info);
       case "trigger" : return new BlockTypes.BlockTrigger(info);
     }
     console.log(info);

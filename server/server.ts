@@ -54,7 +54,7 @@ function loadmodel(socket: WS) {
     { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 2, outputs: [{ id: "node_2" }] } },
 
     //function +
-    { event: 'CREATE_BLOCK', data: { id: 3, type: "function", properties: { name: "+" } } },
+    { event: 'CREATE_BLOCK', data: { id: 3, type: "function", properties: { name: "/" } } },
     { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 3, geom: { x: 300, y: 200 } } },
     { event: 'CHANGE_BLOCK_INPUTS', data: { id: 3, inputs: [{ id: "node_3" }, { id: "node_4" }] } },
     { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 3, outputs: [{ id: "node_5" }, { id: "node_6" }] } },

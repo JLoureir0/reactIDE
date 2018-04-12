@@ -5,17 +5,18 @@ import TSMAP from 'ts-map'
 
 type jsonBlock = {id: number, type?: string, properties?: {name:string, text?:string}, geom?: {x: number, y: number}, inputs?: Array<{id: string}>, outputs?: Array<{id: string}>};
 
-class BlockSum extends Block {
+class BlockArithmetic extends Block {
 
     private numberInputs: Array<number> = new Array();
     private inputsMap: TSMAP<string, number> = new TSMAP<string, number>();
-
+    private operator: String;
 
     constructor(info: jsonBlock) {
         super(info);
+        this.operator = info.properties.name;
     }
 
-    public run(topic: string, message: string) 
+    public run(topic: string, message: string) : void
     {
         if(MessagesHandler.getMessageType(message) == MessagesHandler.MessageType.RECEIVEINPUT){
             const key:string = MessagesHandler.getNodeFromTopic(topic);
@@ -28,9 +29,15 @@ class BlockSum extends Block {
 
         if (this.inputsMap.size == this.Inputs.length) {
             //if the map has all the necessary inputs, send message
-            let res = 0;
+            let res:number;
+            let firstValue:boolean = true;
             this.inputsMap.forEach((value, key) => {
-                res += value;
+                if(firstValue){
+                    res = value;
+                    firstValue = false;
+                } else {
+                    res = this.makeOperation(res, value);
+                }
             })
             this.publishFromOutputs(Messages.getOutputMessage(res));
         } else {
@@ -42,6 +49,16 @@ class BlockSum extends Block {
             }
         }  
     }
+
+    private makeOperation(res: number, value :number) : number {
+        switch(this.operator){
+            case "+": return res + value;
+            case "-": return res - value;
+            case "*": return res * value;
+            case "/": return res / value;
+            default: return res;
+        }
+    }
 }
 
-export { BlockSum }
+export { BlockArithmetic }
