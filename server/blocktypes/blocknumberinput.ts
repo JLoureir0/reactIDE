@@ -11,7 +11,7 @@ class BlockNumberInput extends Block {
 
     
     public run(topic: string, message: string){
-        this.publishFromOutputs(Messages.getInputMessage(this.Properties['name']));
+        this.publishFromOutputs(this.Properties['name']);
     }
 
 }

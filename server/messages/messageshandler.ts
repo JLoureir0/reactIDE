@@ -1,21 +1,5 @@
-export function getInputFromMessage(message: string) : string {
-    const res:string[] = message.split(" ");
-    if(res.length == 2){
-        if(res[0] == "input"){
-            return res[1];
-        }
-    }
-    return "";
-}
-
-export function getOutputFromMessage(message: string) : string {
-    const res:string[] = message.split(" ");
-    if(res.length == 2){
-        if (res[0] == "output") {
-            return res[1];
-        }
-    }
-    return "";
+export function getValueFromMessage(message: string) : number {
+    return parseFloat(message);
 }
 
 export function getNodeFromTopic(topic: string) : string {
@@ -27,17 +11,17 @@ export function getNodeFromTopic(topic: string) : string {
 }
 
 export enum MessageType {
-    RECEIVEINPUT,
-    RECEIVEOUTPUT
+    REACHEDMYINPUT,
+    REACHEDMYOUTPUT
 }
 
 export function getMessageType(message: string) : MessageType {
-    const res:string[] = message.split(" ");
-    if(res.length == 2){
-        if(res[0] == "input" ){
-            return MessageType.RECEIVEINPUT;
-        } else if(res[0] == "output"){
-            return MessageType.RECEIVEOUTPUT;
+    const res:string[] = message.split("/");
+    if(res.length == 3){
+        if(res[1] == "TAKE" ){
+            return MessageType.REACHEDMYOUTPUT;
+        } else if(res[1] == "INPUTS"){
+            return MessageType.REACHEDMYINPUT;
         }
     }
     return null;

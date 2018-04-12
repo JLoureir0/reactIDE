@@ -18,10 +18,9 @@ class BlockArithmetic extends Block {
 
     public run(topic: string, message: string) : void
     {
-        if(MessagesHandler.getMessageType(message) == MessagesHandler.MessageType.RECEIVEINPUT){
+        if(MessagesHandler.getMessageType(topic) == MessagesHandler.MessageType.REACHEDMYINPUT){
             const key:string = MessagesHandler.getNodeFromTopic(topic);
-            const valueString:string = MessagesHandler.getInputFromMessage(message);
-            const value:number = parseFloat(valueString);
+            const value:number = parseFloat(message);
             if(!isNaN(value)){
                 this.inputsMap.set(key, value);
             }
@@ -39,7 +38,7 @@ class BlockArithmetic extends Block {
                     res = this.makeOperation(res, value);
                 }
             })
-            this.publishFromOutputs(Messages.getOutputMessage(res));
+            this.publishFromOutputs(res.toString());
         } else {
             //if map is missing any inputs -> pull from any missing inputs
             for(let i = 0; i < this.Inputs.length; i++){

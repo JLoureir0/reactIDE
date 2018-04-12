@@ -99,7 +99,6 @@ class Block {
     public publishFromInput(node: string, message: string) {
         for (let i = 0; i < this.inputs.length; i++) {
             if(this.inputs[i]['id'] == node){
-                //console.log(this.inputs[i]['id']);
                 this.mqttClient.publish(this.id + "/TAKE/" + this.inputs[i]['id'], message);
             }
         }

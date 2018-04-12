@@ -12,8 +12,8 @@ class BlockConsole extends Block {
     }
 
     public run(topic: string, message: string){
-        if(MessagesHandler.getMessageType(message) == MessagesHandler.MessageType.RECEIVEOUTPUT){
-            this.Properties['text'] = MessagesHandler.getOutputFromMessage(message.toString());
+        if(MessagesHandler.getMessageType(topic) == MessagesHandler.MessageType.REACHEDMYINPUT){
+            this.Properties['text'] = message;
         } else {
             this.publishFromInputs(Messages.pullInputs());
         }

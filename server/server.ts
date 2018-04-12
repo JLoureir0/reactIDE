@@ -53,28 +53,55 @@ function loadmodel(socket: WS) {
     { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 2, geom: { x: 100, y: 300 } } },
     { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 2, outputs: [{ id: "node_2" }] } },
 
+    //constant 2
+    { event: 'CREATE_BLOCK', data: { id: 3, type: "input", properties: { name: "7" } } },
+    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 3, geom: { x: 100, y: 500 } } },
+    { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 3, outputs: [{ id: "node_3" }] } },
+        
+
     //function +
-    { event: 'CREATE_BLOCK', data: { id: 3, type: "function", properties: { name: "/" } } },
-    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 3, geom: { x: 300, y: 200 } } },
-    { event: 'CHANGE_BLOCK_INPUTS', data: { id: 3, inputs: [{ id: "node_3" }, { id: "node_4" }] } },
-    { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 3, outputs: [{ id: "node_5" }, { id: "node_6" }] } },
+    { event: 'CREATE_BLOCK', data: { id: 5, type: "function", properties: { name: "*" } } },
+    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 5, geom: { x: 300, y: 200 } } },
+    { event: 'CHANGE_BLOCK_INPUTS', data: { id: 5, inputs: [{ id: "node_4" }, { id: "node_5" }, { id: "node_6" }] } },
+    { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 5, outputs: [ { id: "node_7" }, { id: "node_15" }] } },
+
+    //constant 2
+    { event: 'CREATE_BLOCK', data: { id: 4, type: "input", properties: { name: "10" } } },
+    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 4, geom: { x: 300, y: 100 } } },
+    { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 4, outputs: [{ id: "node_8" }] } },
+
+    //function +
+    { event: 'CREATE_BLOCK', data: { id: 6, type: "function", properties: { name: "+" } } },
+    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 6, geom: { x: 500, y: 200 } } },
+    { event: 'CHANGE_BLOCK_INPUTS', data: { id: 6, inputs: [{ id: "node_9" }, { id: "node_10" }] } },
+    { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 6, outputs: [{ id: "node_11" }, { id: "node_12" }] } },
 
     //function console
-    { event: 'CREATE_BLOCK', data: { id: 4, type: "console" } },
-    { event: 'CHANGE_BLOCK_PROPERTIES', data: { id: 4, properties: { name: "Output", text: "" } } },
-    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 4, geom: { x: 500, y: 200, expanded: true, width: 150, height: 150 } } },
-    { event: 'CHANGE_BLOCK_INPUTS', data: { id: 4, inputs: [{ id: "node_7" }] } },
+    { event: 'CREATE_BLOCK', data: { id: 7, type: "console" } },
+    { event: 'CHANGE_BLOCK_PROPERTIES', data: { id: 7, properties: { name: "Output", text: "" } } },
+    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 7, geom: { x: 800, y: 200, expanded: true, width: 150, height: 150 } } },
+    { event: 'CHANGE_BLOCK_INPUTS', data: { id: 7, inputs: [{ id: "node_13" }] } },
+
+    //function console
+    { event: 'CREATE_BLOCK', data: { id: 9, type: "console" } },
+    { event: 'CHANGE_BLOCK_PROPERTIES', data: { id: 9, properties: { name: "Output", text: "" } } },
+    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 9, geom: { x: 500, y: 300, expanded: true, width: 150, height: 150 } } },
+    { event: 'CHANGE_BLOCK_INPUTS', data: { id: 9, inputs: [{ id: "node_16" }] } },
 
     //trigger
-    { event: 'CREATE_BLOCK', data: { id: 5, type: "trigger", properties: { name: "Trigger - 1s" } } },
-    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 5, geom: { x: 300, y: 500 } } },
-    { event: 'CHANGE_BLOCK_INPUTS', data: { id: 5, inputs: [{ id: "node_8" }] } },
+    { event: 'CREATE_BLOCK', data: { id: 8, type: "trigger", properties: { name: "Trigger - 1s" } } },
+    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 8, geom: { x: 300, y: 500 } } },
+    { event: 'CHANGE_BLOCK_INPUTS', data: { id: 8, inputs: [{ id: "node_14" }] } },
 
     //links
-    { event: 'CREATE_LINK', data: { id: 1, from: { node: "node_1" }, to: { node: "node_3" } } },
-    { event: 'CREATE_LINK', data: { id: 2, from: { node: "node_2" }, to: { node: "node_4" } } },
-    { event: 'CREATE_LINK', data: { id: 3, from: { node: "node_5" }, to: { node: "node_7" } } },
-    { event: 'CREATE_LINK', data: { id: 4, from: { node: "node_6" }, to: { node: "node_8" } } },
+    { event: 'CREATE_LINK', data: { id: 1, from: { node: "node_1" }, to: { node: "node_4" } } },
+    { event: 'CREATE_LINK', data: { id: 2, from: { node: "node_2" }, to: { node: "node_5" } } },
+    { event: 'CREATE_LINK', data: { id: 3, from: { node: "node_3" }, to: { node: "node_6" } } },
+    { event: 'CREATE_LINK', data: { id: 4, from: { node: "node_7" }, to: { node: "node_10" } } },
+    { event: 'CREATE_LINK', data: { id: 5, from: { node: "node_8" }, to: { node: "node_9" } } },
+    { event: 'CREATE_LINK', data: { id: 6, from: { node: "node_11" }, to: { node: "node_13" } } },
+    { event: 'CREATE_LINK', data: { id: 7, from: { node: "node_12" }, to: { node: "node_14" } } },
+    { event: 'CREATE_LINK', data: { id: 8, from: { node: "node_15" }, to: { node: "node_16" } } },
 
     { event: 'COMMIT', data: {} }
   ]);
