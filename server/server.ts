@@ -74,7 +74,7 @@ function loadmodel(socket: WS) {
     { event: 'CREATE_BLOCK', data: { id: 6, type: "function", properties: { name: "+" } } },
     { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 6, geom: { x: 500, y: 200 } } },
     { event: 'CHANGE_BLOCK_INPUTS', data: { id: 6, inputs: [{ id: "node_9" }, { id: "node_10" }] } },
-    { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 6, outputs: [{ id: "node_11" }, { id: "node_12" }] } },
+    { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 6, outputs: [{ id: "node_11" }] } },
 
     //function console
     { event: 'CREATE_BLOCK', data: { id: 7, type: "console" } },
@@ -92,6 +92,7 @@ function loadmodel(socket: WS) {
     { event: 'CREATE_BLOCK', data: { id: 8, type: "trigger", properties: { name: "Trigger - 1s" } } },
     { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 8, geom: { x: 300, y: 500 } } },
     { event: 'CHANGE_BLOCK_INPUTS', data: { id: 8, inputs: [{ id: "node_14" }] } },
+    { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 8, outputs: [{ id: "node_17" }] } },
 
     //links
     { event: 'CREATE_LINK', data: { id: 1, from: { node: "node_1" }, to: { node: "node_4" } } },
@@ -99,8 +100,8 @@ function loadmodel(socket: WS) {
     { event: 'CREATE_LINK', data: { id: 3, from: { node: "node_3" }, to: { node: "node_6" } } },
     { event: 'CREATE_LINK', data: { id: 4, from: { node: "node_7" }, to: { node: "node_10" } } },
     { event: 'CREATE_LINK', data: { id: 5, from: { node: "node_8" }, to: { node: "node_9" } } },
-    { event: 'CREATE_LINK', data: { id: 6, from: { node: "node_11" }, to: { node: "node_13" } } },
-    { event: 'CREATE_LINK', data: { id: 7, from: { node: "node_12" }, to: { node: "node_14" } } },
+    { event: 'CREATE_LINK', data: { id: 6, from: { node: "node_11" }, to: { node: "node_14" } } },
+    { event: 'CREATE_LINK', data: { id: 7, from: { node: "node_17" }, to: { node: "node_13" } } },
     { event: 'CREATE_LINK', data: { id: 8, from: { node: "node_15" }, to: { node: "node_16" } } },
 
     { event: 'COMMIT', data: {} }
