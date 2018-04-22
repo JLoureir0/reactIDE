@@ -66,7 +66,7 @@ class Model {
    */
   public overrideBlockDetails(blockInfo: jsonCompleteBlock, property: string, eventId: string) 
   {
-    const block = this.blocks.get(blockInfo.id);
+    const block:Block = this.blocks.get(blockInfo.id);
     block.overrideDetails(blockInfo, property);
     this.domainEventBus.publish(eventId, blockInfo);
   }
@@ -85,6 +85,8 @@ class Model {
    */
   public changeBlockProperties(blockInfo: {id: number, properties:{name:string, text:string}}) {
     this.overrideBlockDetails(blockInfo, 'properties', 'BLOCK_PROPERTIES_CHANGED');
+    const block:Block = this.blocks.get(blockInfo.id);
+    block.run("client", "work")
   }
 
   /**
