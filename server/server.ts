@@ -154,19 +154,6 @@ setInterval(() => {
     console.log(e);
     console.log("Error while deserializing the model.");
   }
-
-  //toggle = !toggle;
-
-  /* const json = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: toggle?'select-block':'unselect-block', id: 'blockB' } });
-
-  wss.clients.forEach((client) => {
-    client.send(json);
-    console.log(`Sent: ${json}`);
-  }); */
-
-  //  MQTT test
-  //  mqttClient.publish('blockA/OUTPUTS/node_1', '2');
-  //  mqttClient.publish('blockC/TAKE/node_3', '1');
 }, 2000);
 
 /**

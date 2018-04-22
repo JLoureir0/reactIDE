@@ -95,6 +95,18 @@ function help() {
     console.log("function_name: 'changeBlockLocation'; arguments: 'blockID, coordinateX, coordinateY';\nExample: changeBlockLocation(1, 100, 200);");
 }
 
+
+$("#diagram").droppable({
+    drop: function(event, ui){
+        modelview.model.blocks.forEach(block => {
+            //checks if block exists, if so, only position changed
+            if(block.id == ui.draggable[0]['id']){
+                changeBlockLocation(parseInt(ui.draggable[0]['id']), block.geom.x, block.geom.y)
+            }
+        });
+    }
+});
+
 /*
  $("#newSink").click(() => {
  const block = { id: newGuid(), name: "New Block", style: "red-block", geom: {x: 30, y: 30}, inputs: [ { id: newGuid() }]};
