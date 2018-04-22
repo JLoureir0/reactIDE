@@ -45,7 +45,7 @@ class ModelView {
         <div class="block-content ${type.style}">
           <div class="block-header">
             <div class="block-header-icon"><i class="fa ${type.icon}"></i></div>
-            <div class="block-header-title">${properties.name || ""}</div>
+            <div class="block-header-title blockName" contentEditable="false">${properties.name || ""}</div>
             <div class="block-header-toggle">
               <a id="${block.id}-toggle" class="fa ${geometry.expanded?"fa-caret-down":"fa-caret-right"}"></a>
             </div>
@@ -76,6 +76,15 @@ class ModelView {
       });
 
       blockDiv.click(() => blockDiv.toggleClass("block-selected"));
+
+      blockDiv.dblclick(() => {
+          blockDiv[0].getElementsByClassName('blockName')[0].contentEditable = "True"
+          blockDiv[0].getElementsByClassName('blockName')[0].focus()
+      });
+
+      blockDiv[0].getElementsByClassName('blockName')[0].addEventListener("focusout", function(){
+        changeName(block.id, this.innerText )
+      });
 
       toggleDiv.click((event) => {
           toggleDiv.toggleClass("fa-caret-right").toggleClass("fa-caret-down");
