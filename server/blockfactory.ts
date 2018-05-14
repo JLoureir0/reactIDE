@@ -31,6 +31,7 @@ class BlockFactory {
       case "console" : return new BlockTypes.BlockConsole(info);
       case "function" : return new BlockTypes.BlockArithmetic(info);
       case "trigger" : return new BlockTypes.BlockTrigger(info);
+      case "if" : return new BlockTypes.BlockIf(info);
     }
     console.log(info);
   }

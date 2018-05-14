@@ -36,6 +36,7 @@ function loadmodel(socket: WS) {
     { event: 'CREATE_TYPE', data: { id: "input", icon: "fa fa-code" } },
     { event: 'CREATE_TYPE', data: { id: "console", icon: "fa-terminal", style: "red-block console-block" } },
     { event: 'CREATE_TYPE', data: { id: "function", icon: "fa fa-code", style: "gray-block" } },
+    { event: 'CREATE_TYPE', data: { id: "if", icon: "fa fa-code", style: "gray-block" } },
     { event: 'CREATE_TYPE', data: { id: "comment", style: "green-block" } },
     { event: 'CREATE_TYPE', data: { id: "trigger", icon: "fa fa-caret-square-o-right", style: "blue-block" } },
 
@@ -65,44 +66,71 @@ function loadmodel(socket: WS) {
     { event: 'CHANGE_BLOCK_INPUTS', data: { id: 5, inputs: [{ id: "node_4" }, { id: "node_5" }, { id: "node_6" }] } },
     { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 5, outputs: [ { id: "node_7" }, { id: "node_15" }] } },
 
-    //constant 2
+    //constant 10
     { event: 'CREATE_BLOCK', data: { id: 4, type: "input", properties: { name: "10" } } },
-    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 4, geom: { x: 300, y: 100 } } },
+    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 4, geom: { x: 700, y: 100 } } },
     { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 4, outputs: [{ id: "node_8" }] } },
 
     //function +
     { event: 'CREATE_BLOCK', data: { id: 6, type: "function", properties: { name: "+" } } },
-    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 6, geom: { x: 500, y: 200 } } },
+    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 6, geom: { x: 900, y: 200 } } },
     { event: 'CHANGE_BLOCK_INPUTS', data: { id: 6, inputs: [{ id: "node_9" }, { id: "node_10" }] } },
     { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 6, outputs: [{ id: "node_11" }] } },
 
     //function console
     { event: 'CREATE_BLOCK', data: { id: 7, type: "console" } },
     { event: 'CHANGE_BLOCK_PROPERTIES', data: { id: 7, properties: { name: "Output", text: "" } } },
-    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 7, geom: { x: 800, y: 200, expanded: true, width: 150, height: 150 } } },
+    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 7, geom: { x: 1100, y: 100, expanded: true, width: 150, height: 150 } } },
     { event: 'CHANGE_BLOCK_INPUTS', data: { id: 7, inputs: [{ id: "node_13" }] } },
 
     //function console
     { event: 'CREATE_BLOCK', data: { id: 9, type: "console" } },
     { event: 'CHANGE_BLOCK_PROPERTIES', data: { id: 9, properties: { name: "Output", text: "" } } },
-    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 9, geom: { x: 500, y: 300, expanded: true, width: 150, height: 150 } } },
+    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 9, geom: { x: 300, y: 400, expanded: true, width: 150, height: 150 } } },
     { event: 'CHANGE_BLOCK_INPUTS', data: { id: 9, inputs: [{ id: "node_16" }] } },
 
     //trigger
     { event: 'CREATE_BLOCK', data: { id: 8, type: "trigger", properties: { name: "Trigger - 1s" } } },
-    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 8, geom: { x: 300, y: 500 } } },
+    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 8, geom: { x: 500, y: 200 } } },
     { event: 'CHANGE_BLOCK_INPUTS', data: { id: 8, inputs: [{ id: "node_14" }] } },
     { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 8, outputs: [{ id: "node_17" }] } },
+
+    //if function
+    { event: 'CREATE_BLOCK', data: { id: 10, type: "if", properties: { name: "if (x > 10000)" } } },
+    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 10, geom: { x: 700, y: 200 } } },
+    { event: 'CHANGE_BLOCK_INPUTS', data: { id: 10, inputs: [{ id: "node_18" }] } },
+    { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 10, outputs: [{ id: "node_19" }, { id: "node_20" }] } },
+
+    //function -
+    { event: 'CREATE_BLOCK', data: { id: 11, type: "function", properties: { name: "-" } } },
+    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 11, geom: { x: 800, y: 300 } } },
+    { event: 'CHANGE_BLOCK_INPUTS', data: { id: 11, inputs: [{ id: "node_21" }, { id: "node_22" }] } },
+    { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 11, outputs: [{ id: "node_23" }] } },
+
+    //constant 7
+    { event: 'CREATE_BLOCK', data: { id: 12, type: "input", properties: { name: "7" } } },
+    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 12, geom: { x: 600, y: 400 } } },
+    { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 12, outputs: [{ id: "node_24" }] } },
+
+    //function console
+    { event: 'CREATE_BLOCK', data: { id: 13, type: "console" } },
+    { event: 'CHANGE_BLOCK_PROPERTIES', data: { id: 13, properties: { name: "Output", text: "" } } },
+    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 13, geom: { x: 900, y: 350, expanded: true, width: 150, height: 150 } } },
+    { event: 'CHANGE_BLOCK_INPUTS', data: { id: 13, inputs: [{ id: "node_25" }] } },
 
     //links
     { event: 'CREATE_LINK', data: { id: 1, from: { node: "node_1" }, to: { node: "node_4" } } },
     { event: 'CREATE_LINK', data: { id: 2, from: { node: "node_2" }, to: { node: "node_5" } } },
     { event: 'CREATE_LINK', data: { id: 3, from: { node: "node_3" }, to: { node: "node_6" } } },
-    { event: 'CREATE_LINK', data: { id: 4, from: { node: "node_7" }, to: { node: "node_10" } } },
+    { event: 'CREATE_LINK', data: { id: 4, from: { node: "node_7" }, to: { node: "node_14" } } },
+    { event: 'CREATE_LINK', data: { id: 9, from: { node: "node_19" }, to: { node: "node_10" } } },
     { event: 'CREATE_LINK', data: { id: 5, from: { node: "node_8" }, to: { node: "node_9" } } },
-    { event: 'CREATE_LINK', data: { id: 6, from: { node: "node_11" }, to: { node: "node_14" } } },
-    { event: 'CREATE_LINK', data: { id: 7, from: { node: "node_17" }, to: { node: "node_13" } } },
+    { event: 'CREATE_LINK', data: { id: 6, from: { node: "node_11" }, to: { node: "node_13" } } },
+    { event: 'CREATE_LINK', data: { id: 7, from: { node: "node_17" }, to: { node: "node_18" } } },
     { event: 'CREATE_LINK', data: { id: 8, from: { node: "node_15" }, to: { node: "node_16" } } },
+    { event: 'CREATE_LINK', data: { id: 10, from: { node: "node_24" }, to: { node: "node_22" } } },
+    { event: 'CREATE_LINK', data: { id: 11, from: { node: "node_20" }, to: { node: "node_21" } } },
+    { event: 'CREATE_LINK', data: { id: 12, from: { node: "node_23" }, to: { node: "node_25" } } },
 
     { event: 'COMMIT', data: {} }
   ]);

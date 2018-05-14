@@ -114,6 +114,19 @@ class Block {
         }
     }
 
+        /**
+     * 
+     * @param node
+     * @param message 
+     */
+    public publishFromOutput(node: string, message: string) {
+        for (let i = 0; i < this.outputs.length; i++) {
+            if(this.outputs[i]['id'] == node){
+                this.mqttClient.publish(this.id + "/OUTPUTS/" + this.outputs[i]['id'], message);
+            }
+        }
+    }
+
     /**
      * get ID of the block
      */

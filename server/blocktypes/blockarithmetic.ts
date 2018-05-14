@@ -9,7 +9,7 @@ class BlockArithmetic extends Block {
 
     private numberInputs: Array<number> = new Array();
     private inputsMap: TSMAP<string, number> = new TSMAP<string, number>();
-    private operator: String;
+    private operator: string;
 
     constructor(info: jsonBlock) {
         super(info);
