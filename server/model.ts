@@ -145,6 +145,14 @@ class Model {
   }
 
   /**
+   * TODO
+   */
+  public push(){
+    let model:string = fs.readFileSync('model.json', 'utf-8');
+    return JSON.parse(model);
+  }
+
+  /**
    * 
    */
   public toJson() {

@@ -32,83 +32,62 @@ function loadmodel(socket: WS) {
   const mqttRouter = new MqttRouter(model);
   const eventDispatcher = new EventDispatcher(model, actionBus, mqttRouter);
 
-  actionBus.replay([
-    { event: 'CREATE_TYPE', data: { id: "input", icon: "fa fa-code" } },
-    { event: 'CREATE_TYPE', data: { id: "console", icon: "fa-terminal", style: "red-block console-block" } },
-    { event: 'CREATE_TYPE', data: { id: "function", icon: "fa fa-code", style: "gray-block" } },
-    { event: 'CREATE_TYPE', data: { id: "comment", style: "green-block" } },
-    { event: 'CREATE_TYPE', data: { id: "trigger", icon: "fa fa-caret-square-o-right", style: "blue-block" } },
+  let modelJSON = model.push();
+  let events = modelToEvent(modelJSON);
 
-    //{event: 'CREATE_TYPE', data: {id: "random", icon: "fa-random", style: "red-block" }},
-    //{event: 'CREATE_TYPE', data: {id: "slider", icon: "fa-sliders", style: "green-block" }},
-    //{event: 'CREATE_TYPE', data: {id: "anonymous" }},
+  actionBus.replay(events);
 
-    //constant 2
-    { event: 'CREATE_BLOCK', data: { id: 1, type: "input", properties: { name: "2" } } },
-    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 1, geom: { x: 100, y: 100 } } },
-    { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 1, outputs: [{ id: "node_1" }] } },
+  sendToClient("");
+}
 
-    //constant 2
-    { event: 'CREATE_BLOCK', data: { id: 2, type: "input", properties: { name: "2" } } },
-    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 2, geom: { x: 100, y: 300 } } },
-    { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 2, outputs: [{ id: "node_2" }] } },
+function modelToEvent(modelJSON) {
+  let events = [];
 
-    //constant 2
-    { event: 'CREATE_BLOCK', data: { id: 3, type: "input", properties: { name: "7" } } },
-    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 3, geom: { x: 100, y: 500 } } },
-    { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 3, outputs: [{ id: "node_3" }] } },
-        
+  let blocks = modelJSON.blocks;
 
-    //function +
-    { event: 'CREATE_BLOCK', data: { id: 5, type: "function", properties: { name: "*" } } },
-    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 5, geom: { x: 300, y: 200 } } },
-    { event: 'CHANGE_BLOCK_INPUTS', data: { id: 5, inputs: [{ id: "node_4" }, { id: "node_5" }, { id: "node_6" }] } },
-    { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 5, outputs: [ { id: "node_7" }, { id: "node_15" }] } },
+  blocks.forEach(block => {
+    let geom = block.geom;
+    let inputs = block.inputs;
+    let outputs = block.outputs;
 
-    //constant 2
-    { event: 'CREATE_BLOCK', data: { id: 4, type: "input", properties: { name: "10" } } },
-    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 4, geom: { x: 300, y: 100 } } },
-    { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 4, outputs: [{ id: "node_8" }] } },
+    delete block.geom;
+    delete block.inputs;
+    delete block.outputs;
 
-    //function +
-    { event: 'CREATE_BLOCK', data: { id: 6, type: "function", properties: { name: "+" } } },
-    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 6, geom: { x: 500, y: 200 } } },
-    { event: 'CHANGE_BLOCK_INPUTS', data: { id: 6, inputs: [{ id: "node_9" }, { id: "node_10" }] } },
-    { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 6, outputs: [{ id: "node_11" }] } },
+    //evento de criar bloco (sem geom input e output)
+    let ev = { event: 'CREATE_BLOCK', data: block };
+    events.push(ev);
 
-    //function console
-    { event: 'CREATE_BLOCK', data: { id: 7, type: "console" } },
-    { event: 'CHANGE_BLOCK_PROPERTIES', data: { id: 7, properties: { name: "Output", text: "" } } },
-    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 7, geom: { x: 800, y: 200, expanded: true, width: 150, height: 150 } } },
-    { event: 'CHANGE_BLOCK_INPUTS', data: { id: 7, inputs: [{ id: "node_13" }] } },
+    //evento de mudar geometria
+    ev = { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: block.id, geom: geom } };
+    events.push(ev);
 
-    //function console
-    { event: 'CREATE_BLOCK', data: { id: 9, type: "console" } },
-    { event: 'CHANGE_BLOCK_PROPERTIES', data: { id: 9, properties: { name: "Output", text: "" } } },
-    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 9, geom: { x: 500, y: 300, expanded: true, width: 150, height: 150 } } },
-    { event: 'CHANGE_BLOCK_INPUTS', data: { id: 9, inputs: [{ id: "node_16" }] } },
+    //evento de mudar inputs (verificar se esta vazio)
+    if (inputs != []) {
+      ev = { event: 'CHANGE_BLOCK_INPUTS', data: { id: block.id, inputs: inputs } }
+      events.push(ev);
+    }
 
-    //trigger
-    { event: 'CREATE_BLOCK', data: { id: 8, type: "trigger", properties: { name: "Trigger - 1s" } } },
-    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 8, geom: { x: 300, y: 500 } } },
-    { event: 'CHANGE_BLOCK_INPUTS', data: { id: 8, inputs: [{ id: "node_14" }] } },
-    { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 8, outputs: [{ id: "node_17" }] } },
+    //evento de mudar outputs (verificar se esta vazio)
+    if (outputs != []) {
+      ev = { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: block.id, outputs: outputs } };
+      events.push(ev);
+    }
+  });
 
-    //links
-    { event: 'CREATE_LINK', data: { id: 1, from: { node: "node_1" }, to: { node: "node_4" } } },
-    { event: 'CREATE_LINK', data: { id: 2, from: { node: "node_2" }, to: { node: "node_5" } } },
-    { event: 'CREATE_LINK', data: { id: 3, from: { node: "node_3" }, to: { node: "node_6" } } },
-    { event: 'CREATE_LINK', data: { id: 4, from: { node: "node_7" }, to: { node: "node_10" } } },
-    { event: 'CREATE_LINK', data: { id: 5, from: { node: "node_8" }, to: { node: "node_9" } } },
-    { event: 'CREATE_LINK', data: { id: 6, from: { node: "node_11" }, to: { node: "node_14" } } },
-    { event: 'CREATE_LINK', data: { id: 7, from: { node: "node_17" }, to: { node: "node_13" } } },
-    { event: 'CREATE_LINK', data: { id: 8, from: { node: "node_15" }, to: { node: "node_16" } } },
+  let connections = modelJSON.connections;
+  connections.forEach(con => {
+    let ev = { event: 'CREATE_LINK', data: con }
+    events.push(ev);
+  });
 
-    { event: 'COMMIT', data: {} }
-  ]);
+  let types = modelJSON.types;
+  types.forEach(type => {
+    let ev = { event: 'CREATE_TYPE', data: type };
+    events.push(ev);
+  });
 
-  const modelData = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'SNAPSHOT', data: JSON.parse(model.toJson()) } });
-  sendToClient(modelData);
+  return events;
 }
 
 /**
@@ -133,52 +112,39 @@ wss.on('connection', (socket: WS) => {
   loadmodel(socket);
 
   socket.on('message', parseMessage);
-  socket.on('close', () => console.log('Closed Connection 😱'));
+
+  socket.on('close', () => {
+    console.log('Closed Connection 😱')
+    //save model
+    model.commit();
+  });
 });
 
 let toggle = false;
 
 /**
- * Send model test (client catches on backend.on('DOMAIN_EVENT', (topic, msg) )
- *
-setInterval(() => {
-
-  const json = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'SNAPSHOT', data: JSON.parse(model.toJson()) } });
-
-  try {
-    if (socketTest) {
-      socketTest.send(json);
-      console.log(`Sent: ${json}`);
-    }
-  } catch (e) {
-    console.log(e);
-    console.log("Error while deserializing the model.");
-  }
-}, 2000);*/
-
-/**
  * Function to execute the client request
  */
-function executeRequest(json : {event:string, data:any}) {
+function executeRequest(json: { event: string, data: any }) {
   const actionBus = new EventBus();
   const mqttRouter = new MqttRouter(model);
   const eventDispatcher = new EventDispatcher(model, actionBus, mqttRouter);
 
   actionBus.publish(json.event, json.data);
 
-  if(json.event === "CREATE_BLOCK") {
+  if (json.event === "CREATE_BLOCK") {
     const createdID = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'CREATED_ID', id: model.getLastBlockID() } });
     sendToClient(createdID);
-  } 
-  
-  const modelData = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'SNAPSHOT', data: JSON.parse(model.toJson()) } });
-  sendToClient(modelData);
+  }
+  else {
+    sendToClient("");
+  }
 }
 
 /**
  * Function to send data and snapshot to the client
  */
-function sendToClient(message : string) {
+function sendToClient(message: string) {
 
   //snapshot
   const json = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'SNAPSHOT', data: JSON.parse(model.toJson()) } });
@@ -195,4 +161,5 @@ function sendToClient(message : string) {
     console.log("Error while deserializing the model.");
   }
 }
+
 
