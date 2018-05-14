@@ -32,111 +32,64 @@ function loadmodel(socket: WS) {
   const mqttRouter = new MqttRouter(model);
   const eventDispatcher = new EventDispatcher(model, actionBus, mqttRouter);
 
-  actionBus.replay([
-    { event: 'CREATE_TYPE', data: { id: "input", icon: "fa fa-code" } },
-    { event: 'CREATE_TYPE', data: { id: "console", icon: "fa-terminal", style: "red-block console-block" } },
-    { event: 'CREATE_TYPE', data: { id: "function", icon: "fa fa-code", style: "gray-block" } },
-    { event: 'CREATE_TYPE', data: { id: "if", icon: "fa fa-code", style: "gray-block" } },
-    { event: 'CREATE_TYPE', data: { id: "comment", style: "green-block" } },
-    { event: 'CREATE_TYPE', data: { id: "trigger", icon: "fa fa-caret-square-o-right", style: "blue-block" } },
-
-    //{event: 'CREATE_TYPE', data: {id: "random", icon: "fa-random", style: "red-block" }},
-    //{event: 'CREATE_TYPE', data: {id: "slider", icon: "fa-sliders", style: "green-block" }},
-    //{event: 'CREATE_TYPE', data: {id: "anonymous" }},
-
-    //constant 2
-    { event: 'CREATE_BLOCK', data: { id: 1, type: "input", properties: { name: "2" } } },
-    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 1, geom: { x: 100, y: 100 } } },
-    { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 1, outputs: [{ id: "node_1" }] } },
-
-    //constant 2
-    { event: 'CREATE_BLOCK', data: { id: 2, type: "input", properties: { name: "2" } } },
-    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 2, geom: { x: 100, y: 300 } } },
-    { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 2, outputs: [{ id: "node_2" }] } },
-
-    //constant 2
-    { event: 'CREATE_BLOCK', data: { id: 3, type: "input", properties: { name: "7" } } },
-    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 3, geom: { x: 100, y: 500 } } },
-    { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 3, outputs: [{ id: "node_3" }] } },
-        
-
-    //function +
-    { event: 'CREATE_BLOCK', data: { id: 5, type: "function", properties: { name: "*" } } },
-    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 5, geom: { x: 300, y: 200 } } },
-    { event: 'CHANGE_BLOCK_INPUTS', data: { id: 5, inputs: [{ id: "node_4" }, { id: "node_5" }, { id: "node_6" }] } },
-    { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 5, outputs: [ { id: "node_7" }, { id: "node_15" }] } },
-
-    //constant 10
-    { event: 'CREATE_BLOCK', data: { id: 4, type: "input", properties: { name: "10" } } },
-    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 4, geom: { x: 700, y: 100 } } },
-    { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 4, outputs: [{ id: "node_8" }] } },
-
-    //function +
-    { event: 'CREATE_BLOCK', data: { id: 6, type: "function", properties: { name: "+" } } },
-    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 6, geom: { x: 900, y: 200 } } },
-    { event: 'CHANGE_BLOCK_INPUTS', data: { id: 6, inputs: [{ id: "node_9" }, { id: "node_10" }] } },
-    { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 6, outputs: [{ id: "node_11" }] } },
-
-    //function console
-    { event: 'CREATE_BLOCK', data: { id: 7, type: "console" } },
-    { event: 'CHANGE_BLOCK_PROPERTIES', data: { id: 7, properties: { name: "Output", text: "" } } },
-    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 7, geom: { x: 1100, y: 100, expanded: true, width: 150, height: 150 } } },
-    { event: 'CHANGE_BLOCK_INPUTS', data: { id: 7, inputs: [{ id: "node_13" }] } },
-
-    //function console
-    { event: 'CREATE_BLOCK', data: { id: 9, type: "console" } },
-    { event: 'CHANGE_BLOCK_PROPERTIES', data: { id: 9, properties: { name: "Output", text: "" } } },
-    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 9, geom: { x: 300, y: 400, expanded: true, width: 150, height: 150 } } },
-    { event: 'CHANGE_BLOCK_INPUTS', data: { id: 9, inputs: [{ id: "node_16" }] } },
-
-    //trigger
-    { event: 'CREATE_BLOCK', data: { id: 8, type: "trigger", properties: { name: "Trigger - 1s" } } },
-    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 8, geom: { x: 500, y: 200 } } },
-    { event: 'CHANGE_BLOCK_INPUTS', data: { id: 8, inputs: [{ id: "node_14" }] } },
-    { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 8, outputs: [{ id: "node_17" }] } },
-
-    //if function
-    { event: 'CREATE_BLOCK', data: { id: 10, type: "if", properties: { name: "if (x > 10000)" } } },
-    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 10, geom: { x: 700, y: 200 } } },
-    { event: 'CHANGE_BLOCK_INPUTS', data: { id: 10, inputs: [{ id: "node_18" }] } },
-    { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 10, outputs: [{ id: "node_19" }, { id: "node_20" }] } },
-
-    //function -
-    { event: 'CREATE_BLOCK', data: { id: 11, type: "function", properties: { name: "-" } } },
-    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 11, geom: { x: 800, y: 300 } } },
-    { event: 'CHANGE_BLOCK_INPUTS', data: { id: 11, inputs: [{ id: "node_21" }, { id: "node_22" }] } },
-    { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 11, outputs: [{ id: "node_23" }] } },
-
-    //constant 7
-    { event: 'CREATE_BLOCK', data: { id: 12, type: "input", properties: { name: "7" } } },
-    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 12, geom: { x: 600, y: 400 } } },
-    { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: 12, outputs: [{ id: "node_24" }] } },
-
-    //function console
-    { event: 'CREATE_BLOCK', data: { id: 13, type: "console" } },
-    { event: 'CHANGE_BLOCK_PROPERTIES', data: { id: 13, properties: { name: "Output", text: "" } } },
-    { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: 13, geom: { x: 900, y: 350, expanded: true, width: 150, height: 150 } } },
-    { event: 'CHANGE_BLOCK_INPUTS', data: { id: 13, inputs: [{ id: "node_25" }] } },
-
-    //links
-    { event: 'CREATE_LINK', data: { id: 1, from: { node: "node_1" }, to: { node: "node_4" } } },
-    { event: 'CREATE_LINK', data: { id: 2, from: { node: "node_2" }, to: { node: "node_5" } } },
-    { event: 'CREATE_LINK', data: { id: 3, from: { node: "node_3" }, to: { node: "node_6" } } },
-    { event: 'CREATE_LINK', data: { id: 4, from: { node: "node_7" }, to: { node: "node_14" } } },
-    { event: 'CREATE_LINK', data: { id: 9, from: { node: "node_19" }, to: { node: "node_10" } } },
-    { event: 'CREATE_LINK', data: { id: 5, from: { node: "node_8" }, to: { node: "node_9" } } },
-    { event: 'CREATE_LINK', data: { id: 6, from: { node: "node_11" }, to: { node: "node_13" } } },
-    { event: 'CREATE_LINK', data: { id: 7, from: { node: "node_17" }, to: { node: "node_18" } } },
-    { event: 'CREATE_LINK', data: { id: 8, from: { node: "node_15" }, to: { node: "node_16" } } },
-    { event: 'CREATE_LINK', data: { id: 10, from: { node: "node_24" }, to: { node: "node_22" } } },
-    { event: 'CREATE_LINK', data: { id: 11, from: { node: "node_20" }, to: { node: "node_21" } } },
-    { event: 'CREATE_LINK', data: { id: 12, from: { node: "node_23" }, to: { node: "node_25" } } },
-
-    { event: 'COMMIT', data: {} }
-  ]);
-
   const modelData = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'SNAPSHOT', data: JSON.parse(model.toJson()) } });
   sendToClient(modelData);
+  let modelJSON = model.push();
+  let events = modelToEvent(modelJSON);
+
+  actionBus.replay(events);
+
+  sendToClient("");
+}
+
+function modelToEvent(modelJSON) {
+  let events = [];
+
+  let blocks = modelJSON.blocks;
+
+  blocks.forEach(block => {
+    let geom = block.geom;
+    let inputs = block.inputs;
+    let outputs = block.outputs;
+
+    delete block.geom;
+    delete block.inputs;
+    delete block.outputs;
+
+    //evento de criar bloco (sem geom input e output)
+    let ev = { event: 'CREATE_BLOCK', data: block };
+    events.push(ev);
+
+    //evento de mudar geometria
+    ev = { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: block.id, geom: geom } };
+    events.push(ev);
+
+    //evento de mudar inputs (verificar se esta vazio)
+    if (inputs != []) {
+      ev = { event: 'CHANGE_BLOCK_INPUTS', data: { id: block.id, inputs: inputs } }
+      events.push(ev);
+    }
+
+    //evento de mudar outputs (verificar se esta vazio)
+    if (outputs != []) {
+      ev = { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: block.id, outputs: outputs } };
+      events.push(ev);
+    }
+  });
+
+  let connections = modelJSON.connections;
+  connections.forEach(con => {
+    let ev = { event: 'CREATE_LINK', data: con }
+    events.push(ev);
+  });
+
+  let types = modelJSON.types;
+  types.forEach(type => {
+    let ev = { event: 'CREATE_TYPE', data: type };
+    events.push(ev);
+  });
+
+  return events;
 }
 
 /**
@@ -161,20 +114,47 @@ wss.on('connection', (socket: WS) => {
   loadmodel(socket);
 
   socket.on('message', parseMessage);
-  socket.on('close', () => console.log('Closed Connection 😱'));
+
+  socket.on('close', () => {
+    console.log('Closed Connection 😱')
+    //save model
+    model.commit();
+  });
 });
 
 let toggle = false;
 
 /**
- * Send model test (client catches on backend.on('DOMAIN_EVENT', (topic, msg) )
+ * Function to execute the client request
  */
-setInterval(() => {
+function executeRequest(json: { event: string, data: any }) {
+  const actionBus = new EventBus();
+  const mqttRouter = new MqttRouter(model);
+  const eventDispatcher = new EventDispatcher(model, actionBus, mqttRouter);
 
+  actionBus.publish(json.event, json.data);
+
+  if (json.event === "CREATE_BLOCK") {
+    const createdID = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'CREATED_ID', id: model.getLastBlockID() } });
+    sendToClient(createdID);
+  }
+  else {
+    sendToClient("");
+  }
+}
+
+/**
+ * Function to send data and snapshot to the client
+ */
+function sendToClient(message: string) {
+
+  //snapshot
   const json = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'SNAPSHOT', data: JSON.parse(model.toJson()) } });
 
   try {
     if (socketTest) {
+      socketTest.send(message);
+      console.log(`Sent: ${message}`);
       socketTest.send(json);
       console.log(`Sent: ${json}`);
     }
@@ -182,39 +162,6 @@ setInterval(() => {
     console.log(e);
     console.log("Error while deserializing the model.");
   }
-}, 2000);
-
-/**
- * Function to execute the client request
- */
-function executeRequest(json : {event:string, data:any}) {
-  const actionBus = new EventBus();
-  const mqttRouter = new MqttRouter(model);
-  const eventDispatcher = new EventDispatcher(model, actionBus, mqttRouter);
-
-  actionBus.publish(json.event, json.data);
-
-  if(json.event === "CREATE_BLOCK") {
-    const createdID = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'CREATED_ID', id: model.getLastBlockID() } });
-    sendToClient(createdID);
-  } 
-  
-  const modelData = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'SNAPSHOT', data: JSON.parse(model.toJson()) } });
-  sendToClient(modelData);
 }
 
-/**
- * Function to send data to the client
- */
-function sendToClient(message : string) {
-  try {
-    if (socketTest) {
-      socketTest.send(message);
-      console.log(`Sent: ${message}`);
-    }
-  } catch (e) {
-    console.log(e);
-    console.log("Error while deserializing the model.");
-  }
-}
 
