@@ -140,7 +140,7 @@ let toggle = false;
 
 /**
  * Send model test (client catches on backend.on('DOMAIN_EVENT', (topic, msg) )
- */
+ *
 setInterval(() => {
 
   const json = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'SNAPSHOT', data: JSON.parse(model.toJson()) } });
@@ -154,7 +154,7 @@ setInterval(() => {
     console.log(e);
     console.log("Error while deserializing the model.");
   }
-}, 2000);
+}, 2000);*/
 
 /**
  * Function to execute the client request
@@ -176,13 +176,19 @@ function executeRequest(json : {event:string, data:any}) {
 }
 
 /**
- * Function to send data to the client
+ * Function to send data and snapshot to the client
  */
 function sendToClient(message : string) {
+
+  //snapshot
+  const json = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'SNAPSHOT', data: JSON.parse(model.toJson()) } });
+
   try {
     if (socketTest) {
       socketTest.send(message);
       console.log(`Sent: ${message}`);
+      socketTest.send(json);
+      console.log(`Sent: ${json}`);
     }
   } catch (e) {
     console.log(e);
