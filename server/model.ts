@@ -23,6 +23,8 @@ class Model {
   private types: TsMap<string,jsonType>;
   private domainEventBus: EventBus;
 
+  private path: string = 'server/models/model-original.json';
+
   /**
    * 
    * @param domainEventBus 
@@ -141,14 +143,14 @@ class Model {
    * 
    */
   public commit() {
-    fs.writeFileSync('model.json', this.toJson(), 'utf-8');
+    fs.writeFileSync(this.path, this.toJson(), 'utf-8');
   }
 
   /**
    * TODO
    */
   public push(){
-    let model:string = fs.readFileSync('model.json', 'utf-8');
+    let model:string = fs.readFileSync(this.path, 'utf-8');
     return JSON.parse(model);
   }
 
