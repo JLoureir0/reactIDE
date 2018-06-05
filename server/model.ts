@@ -109,6 +109,17 @@ class Model {
 
   /**
    * 
+   * @param blockInfo 
+   */
+  public changeBlockInputOption(blockInfo: {id: number, option: boolean }) {
+    console.log('O bloco ' + blockInfo.id + ' quer alterar a flag para ' + blockInfo.option);
+    const block:Block = this.blocks.get(blockInfo.id);
+    console.log('Flag actual: ' + block.InputOption);
+    //this.overrideBlockDetails(blockInfo, 'outputs', 'BLOCK_OUTPUTS_CHANGED');
+  }
+
+  /**
+   * 
    * @param link 
    */
   public createLink(link: jsonLink) {

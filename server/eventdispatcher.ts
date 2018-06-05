@@ -21,6 +21,7 @@ class EventDispatcher {
     actionBus.on('CHANGE_BLOCK_GEOMETRY', o => model.changeBlockGeometry(o));
     actionBus.on('CHANGE_BLOCK_PROPERTIES', o => model.changeBlockProperties(o));
     actionBus.on('CHANGE_BLOCK_INPUTS', o => model.changeBlockInputs(o));
+    actionBus.on('CHANGE_BLOCK_INPUT_OPTION', o => model.changeBlockInputOption(o));
     actionBus.on('CHANGE_BLOCK_OUTPUTS', o => model.changeBlockOutputs(o));
     actionBus.on('CREATE_LINK', o => model.createLink(o));
     actionBus.on('CREATE_TYPE', o => model.createType(o));

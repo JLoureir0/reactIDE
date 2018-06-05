@@ -1,6 +1,7 @@
 class ModelView {
   constructor(backend) {
     this.model = {};
+    this.backend = backend;
 
     paper.setup("myCanvas");
     paper.view.autoUpdate = true;
@@ -71,6 +72,7 @@ class ModelView {
       if (geometry.height) bodyDiv.css({height: geometry.height});
       if (properties.text) bodyDiv.append(`<p>${properties.text}</p>`);
       if (block.type !== 'input') optionsDiv.css('display', 'none');
+      if (block.input_option) inputsCheck.prop('checked', true);
 
       blockDiv.draggable({
           grid: config.grid,
@@ -94,8 +96,6 @@ class ModelView {
       });
 
       toggleDiv.click((event) => {
-          console.log("expandido");
-          console.log(block.type);
           toggleDiv.toggleClass("fa-caret-right").toggleClass("fa-caret-down");
           blockDiv.toggleClass("block-expanded");
 
@@ -106,8 +106,9 @@ class ModelView {
           event.stopPropagation();
       });
 
-      inputsCheck.click(() => {
-        console.log('checkbox clicked');
+      inputsCheck.change(() => {
+        const request = { event: 'CHANGE_BLOCK_INPUT_OPTION', data: { id: block.id, option: inputsCheck[0].checked } };
+        this.backend.send(request.event, request.data);
       });
   }
 

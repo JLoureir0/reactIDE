@@ -3,7 +3,7 @@
  */
 import * as MQTT from 'mqtt';
 
-type jsonBlock = {id: number, type?: string, properties?: {name:string, text?:string}, geom?: {x: number, y: number}, inputs?: Array<{id: string}>, outputs?: Array<{id: string}>};
+type jsonBlock = {id: number, type?: string, properties?: {name:string, text?:string}, geom?: {x: number, y: number}, inputs?: Array<{id: string}>, outputs?: Array<{id: string}>, input_option?: boolean};
 
 /**
  * 
@@ -17,6 +17,7 @@ class Block {
     private properties?: {name:string, text?:string};
     private inputs?: Array<{id:string}>;
     private outputs?: Array<{id:string}>;
+    private input_option?: boolean;
 
     /**
      * 
@@ -27,6 +28,7 @@ class Block {
         this.mqttClient = MQTT.connect('mqtt://localhost:1883');
         this.id = info.id;
         this.type = info.type;
+        this.input_option = info.input_option;
 
         //TODO mudar isto
         (!info.geom) ? this.geom = null : this.geom = info.geom;
@@ -128,10 +130,17 @@ class Block {
     }
 
     /**
-     * get ID of the block
+     * Get ID of the block
      */
     get Id(): number {
         return this.id;
+    }
+
+    /**
+     * Get input option of the block
+     */
+    get InputOption(): boolean {
+        return this.input_option;
     }
 
     get Outputs(): Array<{id: string}> {
