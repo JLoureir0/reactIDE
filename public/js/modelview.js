@@ -50,7 +50,11 @@ class ModelView {
               <a id="${block.id}-toggle" class="fa ${geometry.expanded?"fa-caret-down":"fa-caret-right"}"></a>
             </div>
           </div>
-          <div class="block-body"></div>
+          <div class="block-body">
+            <div class="block-input-options">
+                <input type="checkbox">Inputs
+            </div>
+          </div>
         </div>
         <ul class="block-right-connectors">${outputs}</ul>
       </span>`);
@@ -58,12 +62,15 @@ class ModelView {
       const blockDiv = $(`#${block.id}`);
       const toggleDiv = $(`#${block.id}-toggle`);
       const bodyDiv = blockDiv.find(`.block-body`);
+      const optionsDiv = bodyDiv.find(`.block-input-options`);
+      const inputsCheck = optionsDiv.find('input:checkbox:first');
 
       blockDiv.css({top: geometry.y, left: geometry.x});
 
       if (geometry.width) bodyDiv.css({width: geometry.width});
       if (geometry.height) bodyDiv.css({height: geometry.height});
       if (properties.text) bodyDiv.append(`<p>${properties.text}</p>`);
+      if (block.type !== 'input') optionsDiv.css('display', 'none');
 
       blockDiv.draggable({
           grid: config.grid,
@@ -87,6 +94,8 @@ class ModelView {
       });
 
       toggleDiv.click((event) => {
+          console.log("expandido");
+          console.log(block.type);
           toggleDiv.toggleClass("fa-caret-right").toggleClass("fa-caret-down");
           blockDiv.toggleClass("block-expanded");
 
@@ -95,6 +104,10 @@ class ModelView {
           this.triggerPositionChanged(block);
 
           event.stopPropagation();
+      });
+
+      inputsCheck.click(() => {
+        console.log('checkbox clicked');
       });
   }
 
