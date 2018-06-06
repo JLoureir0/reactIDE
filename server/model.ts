@@ -23,7 +23,7 @@ class Model {
   private types: TsMap<string,jsonType>;
   private domainEventBus: EventBus;
 
-  private path: string = 'server/models/model-if.json';
+  private path: string = 'server/models/model-if-while.json';
 
   /**
    * 
