@@ -22,8 +22,7 @@ class Model {
   private connections: TsMap<number,jsonLink>;
   private types: TsMap<string,jsonType>;
   private domainEventBus: EventBus;
-
-  private path: string = 'server/models/model-if-while.json';
+  private path: string;
 
   /**
    * 
@@ -142,15 +141,15 @@ class Model {
   /**
    * 
    */
-  public commit() {
-    fs.writeFileSync(this.path, this.toJson(), 'utf-8');
+  public commit(path: string) {
+    fs.writeFileSync(path, this.toJson(), 'utf-8');
   }
 
   /**
    * TODO
    */
-  public push(){
-    let model:string = fs.readFileSync(this.path, 'utf-8');
+  public push(path: string){
+    let model:string = fs.readFileSync(path, 'utf-8');
     return JSON.parse(model);
   }
 
