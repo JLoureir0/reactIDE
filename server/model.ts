@@ -111,11 +111,11 @@ class Model {
    * 
    * @param blockInfo 
    */
-  public changeBlockInputOption(blockInfo: {id: number, option: boolean }) {
-    console.log('O bloco ' + blockInfo.id + ' quer alterar a flag para ' + blockInfo.option);
+  public changeBlockEnabled(blockInfo: {id: number, enabled: boolean }) {
+    console.log('O bloco ' + blockInfo.id + ' quer alterar a flag para ' + blockInfo.enabled);
     const block:Block = this.blocks.get(blockInfo.id);
-    console.log('Flag actual: ' + block.InputOption);
-    //this.overrideBlockDetails(blockInfo, 'outputs', 'BLOCK_OUTPUTS_CHANGED');
+    console.log('Flag actual: ' + block.isEnabled);
+    this.overrideBlockDetails(blockInfo, 'enabled', 'BLOCK_ENABLED_CHANGED');
   }
 
   /**

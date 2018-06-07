@@ -21,12 +21,21 @@ class BlockArithmetic extends Block {
         if(MessagesHandler.getMessageType(topic) == MessagesHandler.MessageType.REACHEDMYINPUT){
             const key:string = MessagesHandler.getNodeFromTopic(topic);
             const value:number = parseFloat(message);
+
+            if(message == Messages.getEnableMessage()) {
+                console.log('ENABLED NODE: ' + key);
+            } else if (message == Messages.getDisableMessage()) {
+                console.log('DISABLED NODE: ' + key);
+                this.inputsMap.delete(key);
+            }
+
             if(!isNaN(value)){
                 this.inputsMap.set(key, value);
             }
         }
 
         if (this.inputsMap.size == this.Inputs.length) {
+            console.log('ENTROU 1');
             //if the map has all the necessary inputs, send message
             let res:number;
             let firstValue:boolean = true;
@@ -40,6 +49,7 @@ class BlockArithmetic extends Block {
             })
             this.publishFromOutputs(res.toString());
         } else {
+            console.log('ENTROU 2');
             //if map is missing any inputs -> pull from any missing inputs
             for(let i = 0; i < this.Inputs.length; i++){
                 if(this.inputsMap.get(this.Inputs[i].id) == undefined){

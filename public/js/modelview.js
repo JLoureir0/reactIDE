@@ -52,9 +52,6 @@ class ModelView {
             </div>
           </div>
           <div class="block-body">
-            <div class="block-input-options">
-                <input type="checkbox">Inputs
-            </div>
           </div>
         </div>
         <ul class="block-right-connectors">${outputs}</ul>
@@ -63,16 +60,16 @@ class ModelView {
       const blockDiv = $(`#${block.id}`);
       const toggleDiv = $(`#${block.id}-toggle`);
       const bodyDiv = blockDiv.find(`.block-body`);
-      const optionsDiv = bodyDiv.find(`.block-input-options`);
-      const inputsCheck = optionsDiv.find('input:checkbox:first');
 
       blockDiv.css({top: geometry.y, left: geometry.x});
 
       if (geometry.width) bodyDiv.css({width: geometry.width});
       if (geometry.height) bodyDiv.css({height: geometry.height});
       if (properties.text) bodyDiv.append(`<p>${properties.text}</p>`);
-      if (block.type !== 'input') optionsDiv.css('display', 'none');
-      if (block.input_option) inputsCheck.prop('checked', true);
+      if (block.type == 'input') bodyDiv.append('<div class="block-input-options"><input type="checkbox">Enabled</div>');
+
+      const enabledCheckbox = bodyDiv.find(`.block-input-options`).find('input:checkbox:first');
+      if (block.enabled) enabledCheckbox.prop('checked', true);
 
       blockDiv.draggable({
           grid: config.grid,
@@ -106,8 +103,8 @@ class ModelView {
           event.stopPropagation();
       });
 
-      inputsCheck.change(() => {
-        const request = { event: 'CHANGE_BLOCK_INPUT_OPTION', data: { id: block.id, option: inputsCheck[0].checked } };
+      enabledCheckbox.change(() => {
+        const request = { event: 'CHANGE_BLOCK_ENABLED', data: { id: block.id, enabled: enabledCheckbox[0].checked } };
         this.backend.send(request.event, request.data);
       });
   }

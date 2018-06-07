@@ -2,8 +2,10 @@
  * Class dependencies
  */
 import * as MQTT from 'mqtt';
+import * as MessagesHandler from './messages/messageshandler';
+import * as Messages from './messages/messages';
 
-type jsonBlock = {id: number, type?: string, properties?: {name:string, text?:string}, geom?: {x: number, y: number}, inputs?: Array<{id: string}>, outputs?: Array<{id: string}>, input_option?: boolean};
+type jsonBlock = {id: number, type?: string, properties?: {name:string, text?:string}, geom?: {x: number, y: number}, inputs?: Array<{id: string}>, outputs?: Array<{id: string}>, enabled?: boolean};
 
 /**
  * 
@@ -17,7 +19,7 @@ class Block {
     private properties?: {name:string, text?:string};
     private inputs?: Array<{id:string}>;
     private outputs?: Array<{id:string}>;
-    private input_option?: boolean;
+    private enabled?: boolean;
 
     /**
      * 
@@ -28,7 +30,7 @@ class Block {
         this.mqttClient = MQTT.connect('mqtt://localhost:1883');
         this.id = info.id;
         this.type = info.type;
-        this.input_option = info.input_option;
+        this.enabled = info.enabled;
 
         //TODO mudar isto
         (!info.geom) ? this.geom = null : this.geom = info.geom;
@@ -62,6 +64,14 @@ class Block {
             this.subscribeInputs();
         } else if (property == "outputs") {
             this.subscribeOutputs();
+        } else if (property == "enabled") {
+            if(info[property]) {
+                console.log('Vou fazer publish1');
+                this.publishFromOutputs(Messages.getEnableMessage());
+            } else {
+                console.log('Vou fazer publish2');
+                this.publishFromOutputs(Messages.getDisableMessage());
+            }
         }
     }
 
@@ -139,8 +149,8 @@ class Block {
     /**
      * Get input option of the block
      */
-    get InputOption(): boolean {
-        return this.input_option;
+    get isEnabled(): boolean {
+        return this.enabled;
     }
 
     get Outputs(): Array<{id: string}> {
