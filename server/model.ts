@@ -9,8 +9,8 @@ import { EventBus } from './eventbus';
 
 type jsonLink = {id: number, from: {node: string}, to: {node: string}};
 type jsonType = {id: string, icon?: string, style?: string};
-type jsonBlock = {id: number, type: string, properties: {name:string, text?:string}};
-type jsonCompleteBlock = {id: number, type?: string, properties?: {name:string, text?:string}, geom?: {x: number, y: number}, inputs?: Array<{id: string}>, outputs?: Array<{id: string}>};
+type jsonBlock = {id: number, type: string, properties: {name:string, text?:string, enabled?:boolean}};
+type jsonCompleteBlock = {id: number, type?: string, properties?: {name:string, text?:string, enabled?:boolean}, geom?: {x: number, y: number}, inputs?: Array<{id: string}>, outputs?: Array<{id: string}>};
 
 
 /**
@@ -85,10 +85,10 @@ class Model {
    * 
    * @param blockInfo 
    */
-  public changeBlockProperties(blockInfo: {id: number, properties:{name:string, text:string}}) {
-    this.overrideBlockDetails(blockInfo, 'properties', 'BLOCK_PROPERTIES_CHANGED');
+  public changeBlockProperties(blockInfo: {id: number, properties:{name:string, text:string, enabled:boolean}}) {
     const block:Block = this.blocks.get(blockInfo.id);
-    block.run("client", "work")
+    this.overrideBlockDetails(blockInfo, 'properties', 'BLOCK_PROPERTIES_CHANGED');    
+    block.run("client", "work");
   }
 
   /**
@@ -105,17 +105,6 @@ class Model {
    */
   public changeBlockOutputs(blockInfo: {id: number, outputs: Array<{id: string}>}) {
     this.overrideBlockDetails(blockInfo, 'outputs', 'BLOCK_OUTPUTS_CHANGED');
-  }
-
-  /**
-   * 
-   * @param blockInfo 
-   */
-  public changeBlockEnabled(blockInfo: {id: number, enabled: boolean }) {
-    console.log('O bloco ' + blockInfo.id + ' quer alterar a flag para ' + blockInfo.enabled);
-    const block:Block = this.blocks.get(blockInfo.id);
-    console.log('Flag actual: ' + block.isEnabled);
-    this.overrideBlockDetails(blockInfo, 'enabled', 'BLOCK_ENABLED_CHANGED');
   }
 
   /**

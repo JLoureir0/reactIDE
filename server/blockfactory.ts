@@ -4,7 +4,7 @@
 import { Block } from "./block";
 import * as BlockTypes from "./blocktypes/exports";
 
-type jsonBlock = {id: number, type: string, properties: {name:string, text?:string}, geom?: {x: number, y: number}, inputs?: Array<{id: string}>, outputs?: Array<{id: string}>};
+type jsonBlock = {id: number, type: string, properties: {name:string, text?:string, enabled?:boolean}, geom?: {x: number, y: number}, inputs?: Array<{id: string}>, outputs?: Array<{id: string}>};
 
 /**
  * 
@@ -33,7 +33,6 @@ class BlockFactory {
       case "trigger" : return new BlockTypes.BlockTrigger(info);
       case "if" : return new BlockTypes.BlockIf(info);
     }
-    console.log(info);
   }
 
   /**

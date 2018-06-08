@@ -69,7 +69,7 @@ class ModelView {
       if (block.type == 'input') bodyDiv.append('<div class="block-input-options"><input type="checkbox">Enabled</div>');
 
       const enabledCheckbox = bodyDiv.find(`.block-input-options`).find('input:checkbox:first');
-      if (block.enabled) enabledCheckbox.prop('checked', true);
+      if (properties.enabled) enabledCheckbox.prop('checked', true);
 
       blockDiv.draggable({
           grid: config.grid,
@@ -103,10 +103,16 @@ class ModelView {
           event.stopPropagation();
       });
 
-      enabledCheckbox.change(() => {
-        const request = { event: 'CHANGE_BLOCK_ENABLED', data: { id: block.id, enabled: enabledCheckbox[0].checked } };
-        this.backend.send(request.event, request.data);
+      enabledCheckbox.change((event) => {
+        this.changeBlockEnabled(block.id, enabledCheckbox[0].checked);
+        
+        event.stopPropagation();
       });
+  }
+
+  changeBlockEnabled(blockId, option) {
+    const request = { event: 'CHANGE_BLOCK_PROPERTIES', data: { id: blockId, properties: { enabled: option } } };
+    backend.send(request.event, request.data);
   }
 
   updatePath(path, elementA, elementB) {

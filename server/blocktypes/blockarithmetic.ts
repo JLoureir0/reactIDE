@@ -4,11 +4,12 @@ import * as MessagesHandler from '../messages/messageshandler';
 import TSMAP from 'ts-map'
 
 type jsonBlock = {id: number, type?: string, properties?: {name:string, text?:string}, geom?: {x: number, y: number}, inputs?: Array<{id: string}>, outputs?: Array<{id: string}>};
+type blockState = { value? : number , enabled? : boolean };
 
 class BlockArithmetic extends Block {
 
     private numberInputs: Array<number> = new Array();
-    private inputsMap: TSMAP<string, number> = new TSMAP<string, number>();
+    private inputsMap: TSMAP<string, blockState> = new TSMAP<string, blockState>();
     private operator: string;
 
     constructor(info: jsonBlock) {
@@ -18,38 +19,35 @@ class BlockArithmetic extends Block {
 
     public run(topic: string, message: string) : void
     {
-        if(MessagesHandler.getMessageType(topic) == MessagesHandler.MessageType.REACHEDMYINPUT){
+        if(MessagesHandler.getMessageType(topic) == MessagesHandler.MessageType.REACHEDMYINPUT) {
             const key:string = MessagesHandler.getNodeFromTopic(topic);
-            const value:number = parseFloat(message);
+            const value:number = MessagesHandler.getValueFromMessage(message);
+            const enabled:boolean = MessagesHandler.getEnabledFromMessage(message);
 
-            if(message == Messages.getEnableMessage()) {
-                console.log('ENABLED NODE: ' + key);
-            } else if (message == Messages.getDisableMessage()) {
-                console.log('DISABLED NODE: ' + key);
-                this.inputsMap.delete(key);
-            }
-
-            if(!isNaN(value)){
-                this.inputsMap.set(key, value);
+            if(!isNaN(value)){       
+                this.inputsMap.set(key, { value : value , enabled : enabled });
             }
         }
 
         if (this.inputsMap.size == this.Inputs.length) {
-            console.log('ENTROU 1');
             //if the map has all the necessary inputs, send message
-            let res:number;
+            let res:number = 0;
             let firstValue:boolean = true;
-            this.inputsMap.forEach((value, key) => {
+            this.inputsMap.forEach((blockState, key) => {
+                // If block is inactive it doesn't use its value
+                if(blockState.enabled == false) {
+                    return; 
+                }                            
+                
                 if(firstValue){
-                    res = value;
+                    res = blockState.value;
                     firstValue = false;
                 } else {
-                    res = this.makeOperation(res, value);
+                    res = this.makeOperation(res, blockState.value);
                 }
             })
             this.publishFromOutputs(res.toString());
         } else {
-            console.log('ENTROU 2');
             //if map is missing any inputs -> pull from any missing inputs
             for(let i = 0; i < this.Inputs.length; i++){
                 if(this.inputsMap.get(this.Inputs[i].id) == undefined){

@@ -5,7 +5,7 @@ import * as MQTT from 'mqtt';
 import * as MessagesHandler from './messages/messageshandler';
 import * as Messages from './messages/messages';
 
-type jsonBlock = {id: number, type?: string, properties?: {name:string, text?:string}, geom?: {x: number, y: number}, inputs?: Array<{id: string}>, outputs?: Array<{id: string}>, enabled?: boolean};
+type jsonBlock = {id: number, type?: string, properties?: {name:string, text?:string, enabled?: boolean}, geom?: {x: number, y: number}, inputs?: Array<{id: string}>, outputs?: Array<{id: string}>};
 
 /**
  * 
@@ -16,10 +16,9 @@ class Block {
     private id: number;
     private type: string;
     private geom?: {x:number,y:number};
-    private properties?: {name:string, text?:string};
+    private properties?: {name:string, text?:string, enabled?: boolean};
     private inputs?: Array<{id:string}>;
     private outputs?: Array<{id:string}>;
-    private enabled?: boolean;
 
     /**
      * 
@@ -30,7 +29,6 @@ class Block {
         this.mqttClient = MQTT.connect('mqtt://localhost:1883');
         this.id = info.id;
         this.type = info.type;
-        this.enabled = info.enabled;
 
         //TODO mudar isto
         (!info.geom) ? this.geom = null : this.geom = info.geom;
@@ -59,19 +57,18 @@ class Block {
      */
     public overrideDetails(info: jsonBlock, property: string) 
     {
-        this[property] = info[property];
+        if(property == "properties") {
+            // To edit with new values
+            Object.keys(info.properties).forEach((key) => {
+                this.properties[key] = info.properties[key];
+            });
+        } else {
+            this[property] = info[property];
+        }        
         if (property == "inputs") {
             this.subscribeInputs();
         } else if (property == "outputs") {
             this.subscribeOutputs();
-        } else if (property == "enabled") {
-            if(info[property]) {
-                console.log('Vou fazer publish1');
-                this.publishFromOutputs(Messages.getEnableMessage());
-            } else {
-                console.log('Vou fazer publish2');
-                this.publishFromOutputs(Messages.getDisableMessage());
-            }
         }
     }
 
@@ -146,13 +143,6 @@ class Block {
         return this.id;
     }
 
-    /**
-     * Get input option of the block
-     */
-    get isEnabled(): boolean {
-        return this.enabled;
-    }
-
     get Outputs(): Array<{id: string}> {
         return this.outputs;
     }
@@ -161,7 +151,7 @@ class Block {
         return this.inputs;
     }
 
-    get Properties(): {name: string, text?: string} {
+    get Properties(): {name: string, text?: string, enabled?:boolean} {
         return this.properties;
     }
 }
