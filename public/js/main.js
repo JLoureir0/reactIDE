@@ -81,6 +81,8 @@ function changeBlockLocation(blockID, x, y) {
     if(!Number.isInteger(blockID) || typeof blockID == undefined || typeof x == undefined || typeof y == undefined || arguments.length != 3)
         return console.log("Error: Wrong inputs.");
 
+    //get block properties?
+
     const request = { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: blockID, geom: { x: x, y: y } } };
     backend.send(request.event, request.data);
 }

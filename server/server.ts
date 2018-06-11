@@ -145,9 +145,7 @@ function executeRequest(json: { event: string, data: any }) {
   }
   //TODO colocar aqui o evento certo
   else if (json.event === "TESTE") {
-    //TODO escolher só consolas + o bloco mudado para fazer update
-    const createdID = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'CHANGE_PROPERTIES'} });
-    sendDataToClient(createdID);
+    
   }
   else {
     sendSnapshotToClient();

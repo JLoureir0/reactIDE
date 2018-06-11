@@ -3,7 +3,6 @@
  */
 import * as MQTT from 'mqtt';
 import { Model } from './model';
-import { Block } from './block';
 
 /**
  * Class responsible for the routing of the MQTT messages
