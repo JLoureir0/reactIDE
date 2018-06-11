@@ -1,8 +1,9 @@
 const backend = new WSBackEnd(config.backendUrl);
 const modelview = new ModelView(backend);
+const toolbox = new Toolbox();
 
 function createBlock(type, name) {
-    if(typeof type == undefined || typeof name == undefined || arguments.length != 2)
+    if (typeof type == undefined || typeof name == undefined || arguments.length != 2)
         return console.log("Error: Wrong inputs.");
 
     const block = { event: 'CREATE_BLOCK', data: { id: 0, type: type, properties: { name: name } } };
@@ -10,13 +11,13 @@ function createBlock(type, name) {
     backend.send(block.event, block.data);
     backend.on('DOMAIN_EVENT', (topic, msg) => {
         if (msg.event === 'CREATED_ID') {
-            console.log("Block created with ID: "+ msg.id + ".");
-        } 
-      });
+            console.log("Block created with ID: " + msg.id + ".");
+        }
+    });
 }
 
 function createBlock(type, name, x, y) {
-    if(typeof type == undefined || typeof name == undefined || typeof x == undefined || typeof y == undefined || arguments.length != 4) 
+    if (typeof type == undefined || typeof name == undefined || typeof x == undefined || typeof y == undefined || arguments.length != 4)
         return console.log("Error: Wrong inputs.");
 
     const block = { event: 'CREATE_BLOCK', data: { id: 0, type: type, properties: { name: name } } };
@@ -26,19 +27,19 @@ function createBlock(type, name, x, y) {
         if (msg.event === 'CREATED_ID') {
             const geo = { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: msg.id, geom: { x: x, y: y } } };
             backend.send(geo.event, geo.data);
-            console.log("Block created with ID: "+ msg.id + ".");
-        } 
-      });
+            console.log("Block created with ID: " + msg.id + ".");
+        }
+    });
 }
 
 function changeInputs(blockID, inputs) {
-    if(!Number.isInteger(blockID) || typeof blockID == undefined || typeof inputs == undefined || arguments.length != 2)
+    if (!Number.isInteger(blockID) || typeof blockID == undefined || typeof inputs == undefined || arguments.length != 2)
         return console.log("Error: Wrong inputs.");
 
     var inputsParsed = [];
-    for(var i in inputs) {
+    for (var i in inputs) {
         inputsParsed.push({
-            "id" : inputs[i]
+            "id": inputs[i]
         });
     }
 
@@ -47,13 +48,13 @@ function changeInputs(blockID, inputs) {
 }
 
 function changeOutputs(blockID, outputs) {
-    if(!Number.isInteger(blockID) || typeof blockID == undefined || typeof outputs == undefined || arguments.length != 2)
+    if (!Number.isInteger(blockID) || typeof blockID == undefined || typeof outputs == undefined || arguments.length != 2)
         return console.log("Error: Wrong inputs.");
 
     var outputsParsed = [];
-    for(var i in outputs) {
+    for (var i in outputs) {
         outputsParsed.push({
-            "id" : outputs[i]
+            "id": outputs[i]
         });
     }
 
@@ -62,7 +63,7 @@ function changeOutputs(blockID, outputs) {
 }
 
 function changeName(blockID, name) {
-    if(!Number.isInteger(blockID) || typeof blockID == undefined || typeof name == undefined || arguments.length != 2)
+    if (!Number.isInteger(blockID) || typeof blockID == undefined || typeof name == undefined || arguments.length != 2)
         return console.log("Error: Wrong inputs.");
 
     const request = { event: 'CHANGE_BLOCK_PROPERTIES', data: { id: blockID, properties: { name: name } } };
@@ -70,7 +71,7 @@ function changeName(blockID, name) {
 }
 
 function createLink(nodeA, nodeB) {
-    if(typeof nodeA == undefined || typeof nodeB == undefined || arguments.length != 2) 
+    if (typeof nodeA == undefined || typeof nodeB == undefined || arguments.length != 2)
         return console.log("Error: Wrong inputs.");
 
     const request = { event: 'CREATE_LINK', data: { id: 0, from: { node: nodeA }, to: { node: nodeB } } };
@@ -79,7 +80,7 @@ function createLink(nodeA, nodeB) {
 
 function changeBlockLocation(blockID, x, y) {
     //TODO: OFFSET of 200(toolbox space) should not be hard coded
-    if(!Number.isInteger(blockID) || typeof blockID == undefined || typeof x == undefined || typeof y == undefined || arguments.length != 3 || x < 200)
+    if (!Number.isInteger(blockID) || typeof blockID == undefined || typeof x == undefined || typeof y == undefined || arguments.length != 3 || x < 200)
         return console.log("Error: Wrong inputs.");
 
     const request = { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: blockID, geom: { x: x, y: y } } };
@@ -98,13 +99,19 @@ function help() {
 
 
 $("#diagram").droppable({
-    drop: function(event, ui){
-        modelview.model.blocks.forEach(block => {
-            //checks if block exists, if so, only position changed
-            if(block.id == ui.draggable[0]['id']){
-                changeBlockLocation(parseInt(ui.draggable[0]['id']), block.geom.x, block.geom.y)
-            }
-        });
+    drop: function (event, ui) {
+        if (/^palette-test-.*/.test(ui.draggable[0].id)) {
+            createBlock(ui.draggable[0].id.substring(13), ui.draggable[0].innerText, ui.offset.left, ui.offset.top);
+        }
+        else {
+            modelview.model.blocks.forEach(block => {
+                //checks if block exists, if so, only position changed
+                if (block.id == ui.draggable[0]['id']) {
+                    changeBlockLocation(parseInt(ui.draggable[0]['id']), block.geom.x, block.geom.y)
+                }
+            });
+
+        }
     }
 });
 

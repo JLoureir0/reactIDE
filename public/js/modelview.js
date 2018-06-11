@@ -59,7 +59,10 @@ class ModelView {
         const toggleDiv = $(`#${block.id}-toggle`);
         const bodyDiv = blockDiv.find(`.block-body`);
 
-        blockDiv.css({ top: geometry.y, left: geometry.x });
+        if(geometry.x < 200)
+            blockDiv.css({ top: geometry.y, left: geometry.x+200 });
+        else
+            blockDiv.css({ top: geometry.y, left: geometry.x });
 
         if (geometry.width) bodyDiv.css({ width: geometry.width });
         if (geometry.height) bodyDiv.css({ height: geometry.height });
