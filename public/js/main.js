@@ -25,7 +25,12 @@ function createBlock(type, name, x, y) {
     backend.send(block.event, block.data);
     backend.on('DOMAIN_EVENT', (topic, msg) => {
         if (msg.event === 'CREATED_ID') {
-            const geo = { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: msg.id, geom: { x: x, y: y } } };
+            let geom_send = { x: x, y: y };
+            //special case with more properties
+            if (type === "console") {
+                geom_send = { x: x, y: y, expanded: true, width: 150, height: 150 };
+            }
+            const geo = { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: msg.id, geom: geom_send } };
             backend.send(geo.event, geo.data);
             console.log("Block created with ID: " + msg.id + ".");
         }
@@ -83,15 +88,13 @@ function changeBlockLocation(blockID, x, y) {
     if (!Number.isInteger(blockID) || typeof blockID == undefined || typeof x == undefined || typeof y == undefined || arguments.length != 3 || x < 200)
         return console.log("Error: Wrong inputs.");
 
-    //get block properties?
-
     const request = { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: blockID, geom: { x: x, y: y } } };
     backend.send(request.event, request.data);
 }
 
 function help() {
     console.log("List of functions to add features to the program:");
-    console.log("function_name: 'createBlock'; arguments: 'type ('input'; 'output'; 'console'; 'trigger'), name, coordinateX, coordinateY';\nExample: createBlock('input', '2'); createBlock('input', '2', '100', '100');");
+    console.log("function_name: 'createBlock'; arguments: 'type ('input'; 'console'; 'function'; 'trigger'; 'if'; 'while'), name, coordinateX, coordinateY';\nExample: createBlock('input', '2'); createBlock('input', '2', '100', '100');");
     console.log("function_name: 'changeInputs'; arguments: 'blockID, array of nodes';\nExample: changeInputs(1, ['A', 'B']);");
     console.log("function_name: 'changeOutputs'; arguments: 'blockID, array of nodes';\nExample: changeOutputs(1, ['A', 'B']);");
     console.log("function_name: 'changeName'; arguments: 'blockID, name';\nExample: changeName(1, '100');");

@@ -132,14 +132,18 @@ function executeRequest(json: { event: string, data: any }) {
   const mqttRouter = new MqttRouter(model);
   const eventDispatcher = new EventDispatcher(model, actionBus, mqttRouter, path);
 
+  console.log("< < <")
+  console.log(json.event);
+  console.log(json.data)
+  console.log("> > >")
+
   actionBus.publish(json.event, json.data);
 
   if (json.event === "CREATE_BLOCK") {
+    console.log("Aqui")
     const createdID = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'CREATED_ID', id: model.getLastBlockID() } });
+    console.log(createdID)
     sendDataToClient(createdID);
-  }
-  else if (json.event === "TESTE") {
-    //TODO colocar aqui o evento certo
   }
   else {
     sendSnapshotToClient();

@@ -34,7 +34,7 @@ class BlockFactory {
       case "if" : return new BlockTypes.BlockIf(info);
       case "while" : return new BlockTypes.BlockWhile(info);
     }
-    console.log(info);
+    console.log(`[ERROR] invalid type: ${info}`)
   }
 
   /**
