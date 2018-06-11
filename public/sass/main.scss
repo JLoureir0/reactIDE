@@ -11,10 +11,43 @@ body {
 
 #myCanvas {
   position: absolute;
-  left: 0px;
+  left: 200px;
   top: 0px;
   width: 2000px;
   height: 2000px;
+}
+
+div#toolbox {
+  width: 15%;
+  height: 2000px;
+  background: black;
+  float: left;
+  font-size: large;
+  color: red;
+}
+div#diagram {
+  margin-left: 15%;
+  height: 2000px;
+  background: white;
+}
+
+#search {
+  border: 3px black solid;
+  margin-bottom: 5%;
+}
+
+#search-input {
+  width: 80%;
+  height: 40px;
+}
+
+#search-submit {
+  width: 20%;
+  height: 40px;
+}
+
+.palette-content {
+  margin-left: 10%;
 }
 
 .block {
@@ -138,6 +171,10 @@ body {
 
 .block-right-connectors {
   right: -$node-padding+($node-size/2);
+}
+
+.hide {
+  display: none;
 }
 
 .red-block {

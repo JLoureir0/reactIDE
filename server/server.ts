@@ -134,18 +134,12 @@ function executeRequest(json: { event: string, data: any }) {
 
   actionBus.publish(json.event, json.data);
 
-  console.log("---------")
-  console.log(json.event)
-  console.log(json.data)
-  console.log("---------")
-
   if (json.event === "CREATE_BLOCK") {
     const createdID = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'CREATED_ID', id: model.getLastBlockID() } });
     sendDataToClient(createdID);
   }
-  //TODO colocar aqui o evento certo
   else if (json.event === "TESTE") {
-    
+    //TODO colocar aqui o evento certo
   }
   else {
     sendSnapshotToClient();
