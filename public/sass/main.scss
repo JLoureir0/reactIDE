@@ -11,10 +11,22 @@ body {
 
 #myCanvas {
   position: absolute;
-  left: 0px;
+  left: 200px;
   top: 0px;
   width: 2000px;
   height: 2000px;
+}
+
+div#toolbox {
+  width: 15%;
+  height: 2000px;
+  background: red;
+  float: left;
+}
+div#diagram {
+  margin-left: 15%;
+  height: 2000px;
+  background: black;
 }
 
 .block {
