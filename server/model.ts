@@ -19,7 +19,6 @@ type jsonCompleteBlock = { id: number, type?: string, properties?: { name: strin
 class Model {
 
   private blocks: TsMap<number, Block>;
-  private temp_blocks: TsMap<number, Block>;
   private connections: TsMap<number, jsonLink>;
   private types: TsMap<string, jsonType>;
   private domainEventBus: EventBus;
@@ -31,7 +30,6 @@ class Model {
    */
   constructor(domainEventBus: EventBus) {
     this.blocks = new TsMap();
-    this.temp_blocks = new TsMap();
     this.connections = new TsMap();
     this.types = new TsMap();
     this.domainEventBus = domainEventBus;
@@ -57,8 +55,10 @@ class Model {
    * @param blockInfo 
    */
   public destroyBlock(blockInfo: jsonBlock) {
-    this.deleteMap(blockInfo.id, this.blocks.values());
+    console.log(this.blocks);
+    this.deleteBlock(blockInfo.id);
     //this.blocks.delete(blockInfo.id);
+    console.log(this.blocks);
     this.domainEventBus.publish('BLOCK_DESTROYED', blockInfo);
   }
 
@@ -152,7 +152,7 @@ class Model {
    * @param link 
    */
   public destroyLink(link: jsonLink) {
-    this.deleteMap(link.id, this.connections.values());
+    this.deleteLink(link.id);
     //this.connections.delete(link.id);
     this.domainEventBus.publish('LINK_DESTROYED', link);
   }
@@ -211,17 +211,39 @@ class Model {
   /**
    * funcao nojenta porque nao funciona o delete do map
    */
-  public deleteMap(id: number, x: any){
-    this.temp_blocks.clear();
+  public deleteBlock(id: number){
+    let temp_blocks: TsMap<number, Block> = new TsMap();
+    let x = this.blocks.values()
+
     for (let index = 0; index < x.length; index++) {
       const element = x[index];
       
       if(element.Id !== id){
-        this.temp_blocks.set(element.Id, element);
+        temp_blocks.set(element.Id, element);
       }
     }
     this.blocks.clear();
-    this.blocks = this.temp_blocks;
+    this.blocks = temp_blocks;
+    console.log("delete done")
+  }
+
+    /**
+   * funcao nojenta porque nao funciona o delete do map
+   */
+  public deleteLink(id: number){
+    let temp_links:TsMap<number, jsonLink> = new TsMap();
+    let x = this.connections.values();
+
+    for (let index = 0; index < x.length; index++) {
+      const element = x[index];
+      
+      if(element.id !== id){
+        temp_links.set(element.id, element);
+      }
+    }
+    this.connections.clear();
+    this.connections = temp_links;
+    console.log("delete done")
   }
 }
 

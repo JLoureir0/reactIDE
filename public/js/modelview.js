@@ -79,21 +79,27 @@ class ModelView {
             }
         });
 
-        let handler_block = function(event){
+        let handler_block = function (event) {
             let key = event.key || event.keyCode;
-            if(key === 'Delete'){
-                console.log("Delete "+block.id)    
+            if (key === 'Delete') {
+                console.log("Delete " + block.id)
                 backend.send('DESTROY_BLOCK', { id: block.id });
             }
         }
+
+        backend.on('DOMAIN_EVENT', (topic, msg) => {
+            if (msg.event === 'DESTROYED_BLOCK') {
+                removeEventListener('keydown', handler_block);
+            }
+        });
 
         blockDiv.click(() => {
             blockDiv.toggleClass("block-selected");
             let isSelected = blockDiv[0].classList.contains('block-selected')
 
-            if(isSelected)  addEventListener('keydown', handler_block);
-            else    removeEventListener('keydown', handler_block);
-  
+            if (isSelected) addEventListener('keydown', handler_block);
+            else removeEventListener('keydown', handler_block);
+
         });
 
         blockDiv.dblclick(() => {
@@ -117,7 +123,7 @@ class ModelView {
         });
     }
 
-    
+
 
     updatePath(path, elementA, elementB) {
         //TODO: OFFSET of 200(toolbox space) should not be hard coded
@@ -145,19 +151,25 @@ class ModelView {
         elementB.on('positionChanged', () => this.updatePath(path, elementA, elementB));
         this.updatePath(path, elementA, elementB);
 
-        let handler = function(event){
+        let handler_conn = function (event) {
             let key = event.key || event.keyCode;
-            if(key === 'Delete'){
-                console.log("Delete "+conn.id)    
+            if (key === 'Delete') {
+                console.log("Delete " + conn.id)
                 backend.send('DESTROY_LINK', { id: conn.id });
             }
         }
 
+        backend.on('DOMAIN_EVENT', (topic, msg) => {
+            if (msg.event === 'DESTROYED_LINK') {
+                removeEventListener('keydown', handler_conn);
+            }
+        });
+
         let updatePathColor = () => {
             path.strokeColor = (conn.selected ? config.pathSelectedColor : config.pathColor);
 
-            if(conn.selected)  addEventListener('keydown', handler);
-            else    removeEventListener('keydown', handler);
+            if (conn.selected) addEventListener('keydown', handler_conn);
+            else removeEventListener('keydown', handler_conn);
         }
 
         path.on({

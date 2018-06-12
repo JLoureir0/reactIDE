@@ -20,7 +20,7 @@ const domainEventBus = new EventBus();
 const model = new Model(domainEventBus);
 let socketTest = null;
 
-let path: string = 'server/models/model-original.json';
+let path: string = 'server/models/model-test-delete.json';
 
 /**
  * 
@@ -136,18 +136,21 @@ function executeRequest(json: { event: string, data: any }) {
 
   if (json.event === "CREATE_BLOCK") {
     const createdID = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'CREATED_ID', id: model.getLastBlockID() } });
-    console.log(createdID)
     sendDataToClient(createdID);
   }
   else if (json.event === "DESTROY_BLOCK"){
-    //enviar snapshot com as cenas apagadas
-    //sendSnapshotToClient();
-    console.log("APAGUEI BLOCK")
+    const deletedID = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'DESTROYED_BLOCK', id: json.data.id } });
+    sendDataToClient(deletedID);
+
+    //TODO compor
+    sendSnapshotToClient();
   }
   else if (json.event === "DESTROY_LINK"){
-    //enviar snapshot com as cenas apagadas
-    //sendSnapshotToClient();
-    console.log("APAGUEI CONNECTION")
+    const deletedID = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'DESTROYED_LINK', id: json.data.id } });
+    sendDataToClient(deletedID);
+
+    //TODO compor
+    sendSnapshotToClient();
   }
   else {
     sendSnapshotToClient();
