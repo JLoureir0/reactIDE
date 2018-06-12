@@ -48,7 +48,7 @@ class ModelView {
             <div class="block-header-icon"><i class="fa ${type.icon}"></i></div>
             <div class="block-header-title blockName" contentEditable="false">${properties.name || ""}</div>
             <div class="block-header-toggle">
-              <a id="${block.id}-toggle" class="fa ${geometry.expanded?"fa-caret-down":"fa-caret-right"}"></a>
+              <a id="${block.id}-toggle" class="fa ${geometry.expanded ? "fa-caret-down" : "fa-caret-right"}"></a>
             </div>
           </div>
           <div class="block-body">
@@ -61,7 +61,10 @@ class ModelView {
       const toggleDiv = $(`#${block.id}-toggle`);
       const bodyDiv = blockDiv.find(`.block-body`);
 
-      blockDiv.css({top: geometry.y, left: geometry.x});
+      if(geometry.x < 200)
+            blockDiv.css({ top: geometry.y, left: geometry.x+200 });
+        else
+            blockDiv.css({ top: geometry.y, left: geometry.x });
 
       if (geometry.width) bodyDiv.css({width: geometry.width});
       if (geometry.height) bodyDiv.css({height: geometry.height});
@@ -116,15 +119,16 @@ class ModelView {
   }
 
   updatePath(path, elementA, elementB) {
-      const p1 = { top: elementA.offset().top + elementA.height()/2, left: elementA.offset().left + elementA.width()/2 };
-      const p2 = { top: elementB.offset().top + elementB.height()/2, left: elementB.offset().left + elementB.width()/2 };
+    //TODO: OFFSET of 200(toolbox space) should not be hard coded
+    const p1 = { top: elementA.offset().top + elementA.height() / 2, left: elementA.offset().left - 200 + elementA.width() / 2 };
+    const p2 = { top: elementB.offset().top + elementB.height() / 2, left: elementB.offset().left - 200 + elementB.width() / 2 };
 
-      path.removeSegments();
-      path.add(new paper.Point(p1.left, p1.top));
-      path.cubicCurveTo(
-          new paper.Point(p1.left + 70, p1.top),
-          new paper.Point(p2.left - 70, p2.top),
-          new paper.Point(p2.left, p2.top));
+    path.removeSegments();
+    path.add(new paper.Point(p1.left, p1.top));
+    path.cubicCurveTo(
+        new paper.Point(p1.left + 70, p1.top),
+        new paper.Point(p2.left - 70, p2.top),
+        new paper.Point(p2.left, p2.top));
   }
 
   drawConnection(conn) {

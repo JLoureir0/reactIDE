@@ -32,7 +32,9 @@ class BlockFactory {
       case "function" : return new BlockTypes.BlockArithmetic(info);
       case "trigger" : return new BlockTypes.BlockTrigger(info);
       case "if" : return new BlockTypes.BlockIf(info);
+      case "while" : return new BlockTypes.BlockWhile(info);
     }
+    console.log(`[ERROR] invalid type: ${info}`)
   }
 
   /**

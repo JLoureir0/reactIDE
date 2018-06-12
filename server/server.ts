@@ -20,6 +20,8 @@ const domainEventBus = new EventBus();
 const model = new Model(domainEventBus);
 let socketTest = null;
 
+let path: string = 'server/models/model-original.json';
+
 /**
  * 
  * @param socket 
@@ -30,16 +32,14 @@ function loadmodel(socket: WS) {
   const actionBus = new EventBus();
   // const model = new Model(domainEventBus);
   const mqttRouter = new MqttRouter(model);
-  const eventDispatcher = new EventDispatcher(model, actionBus, mqttRouter);
+  const eventDispatcher = new EventDispatcher(model, actionBus, mqttRouter, path);
 
-  const modelData = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'SNAPSHOT', data: JSON.parse(model.toJson()) } });
-  sendToClient(modelData);
-  let modelJSON = model.push();
+  let modelJSON = model.push(path);
   let events = modelToEvent(modelJSON);
 
   actionBus.replay(events);
 
-  sendToClient("");
+  sendSnapshotToClient();
 }
 
 function modelToEvent(modelJSON) {
@@ -118,7 +118,7 @@ wss.on('connection', (socket: WS) => {
   socket.on('close', () => {
     console.log('Closed Connection 😱')
     //save model
-    model.commit();
+    model.commit(path);
   });
 });
 
@@ -130,31 +130,46 @@ let toggle = false;
 function executeRequest(json: { event: string, data: any }) {
   const actionBus = new EventBus();
   const mqttRouter = new MqttRouter(model);
-  const eventDispatcher = new EventDispatcher(model, actionBus, mqttRouter);
+  const eventDispatcher = new EventDispatcher(model, actionBus, mqttRouter, path);
+
+  console.log("< < <")
+  console.log(json.event);
+  console.log(json.data)
+  console.log("> > >")
 
   actionBus.publish(json.event, json.data);
 
   if (json.event === "CREATE_BLOCK") {
+    console.log("Aqui")
     const createdID = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'CREATED_ID', id: model.getLastBlockID() } });
-    sendToClient(createdID);
+    console.log(createdID)
+    sendDataToClient(createdID);
   }
   else {
-    sendToClient("");
+    sendSnapshotToClient();
   }
 }
 
 /**
- * Function to send data and snapshot to the client
+ * Function to send data to the client
  */
-function sendToClient(message: string) {
-
-  //snapshot
-  const json = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'SNAPSHOT', data: JSON.parse(model.toJson()) } });
-
+function sendDataToClient(message: string) {
   try {
     if (socketTest) {
       socketTest.send(message);
       console.log(`Sent: ${message}`);
+    }
+  } catch (e) {
+    console.log(e);
+    console.log("Error while deserializing the model.");
+  }
+}
+
+function sendSnapshotToClient() {
+  try {
+    if (socketTest) {
+      //snapshot
+      const json = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'SNAPSHOT', data: JSON.parse(model.toJson()) } });
       socketTest.send(json);
       console.log(`Sent: ${json}`);
     }

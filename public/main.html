@@ -1,16 +1,48 @@
 <html>
-  <head>
-    <link rel="stylesheet" href="css/main.css" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.10.3/paper-full.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-    <script src="https://unpkg.com/mqtt@2.6.2/dist/mqtt.min.js"></script>
-  </head>
-  <body>
+
+<head>
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.10.3/paper-full.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+  <script src="https://unpkg.com/mqtt@2.6.2/dist/mqtt.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.0.4/fuse.min.js"></script>
+</head>
+
+<body>
+  <section>
+    <div id="toolbox">
+      <div id=search>
+        <input id="search-input" type="search" placeholder="Filter nodes"><button id="search-submit" type="submit">
+            <i class="fa fa-search" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div id="palette-container-test" class="palette-category palette-close">
+        <div id="palette-header-test" class="palette-header">
+          <i class="expanded fa fa-angle-down"></i>
+          <span>Test</span>
+        </div>
+        <div class="palette-content hide" id="palette-base-category-test">
+          <div id="palette-test-input" class="draggable">
+            <span>Input</span>
+          </div>
+          <div id="palette-test-console" class="draggable">
+            <span>Output</span>
+          </div>
+          <div id="palette-test-function" class="draggable">
+            <span>Function</span>
+          </div>
+        </div>
+      </div>
+      <div id="search-results">
+      </div>
+    </div>
     <div id="diagram">
       <canvas id="myCanvas"></canvas>
     </div>
-    <script src="js/main.min.js" canvas="myCanvas"></script>
-  </body>
+  </section>
+  <script src="js/main.min.js" canvas="myCanvas"></script>
+</body>
+
 </html>

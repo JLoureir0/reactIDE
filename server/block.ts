@@ -24,8 +24,7 @@ class Block {
      * 
      * @param info 
      */
-    constructor(info: jsonBlock) 
-    {    
+    constructor(info: jsonBlock) {
         this.mqttClient = MQTT.connect('mqtt://localhost:1883');
         this.id = info.id;
         this.type = info.type;
@@ -107,7 +106,7 @@ class Block {
      */
     public publishFromInput(node: string, message: string) {
         for (let i = 0; i < this.inputs.length; i++) {
-            if(this.inputs[i]['id'] == node){
+            if (this.inputs[i]['id'] == node) {
                 this.mqttClient.publish(this.id + "/TAKE/" + this.inputs[i]['id'], message);
             }
         }
@@ -123,14 +122,14 @@ class Block {
         }
     }
 
-        /**
-     * 
-     * @param node
-     * @param message 
-     */
+    /**
+ * 
+ * @param node
+ * @param message 
+ */
     public publishFromOutput(node: string, message: string) {
         for (let i = 0; i < this.outputs.length; i++) {
-            if(this.outputs[i]['id'] == node){
+            if (this.outputs[i]['id'] == node) {
                 this.mqttClient.publish(this.id + "/OUTPUTS/" + this.outputs[i]['id'], message);
             }
         }
@@ -143,16 +142,20 @@ class Block {
         return this.id;
     }
 
-    get Outputs(): Array<{id: string}> {
+    get Outputs(): Array<{ id: string }> {
         return this.outputs;
     }
 
-    get Inputs(): Array<{id: string}> {
+    get Inputs(): Array<{ id: string }> {
         return this.inputs;
     }
 
     get Properties(): {name: string, text?: string, enabled?:boolean} {
         return this.properties;
+    }
+
+    get Geom(): { x: number, y: number, expanded?: boolean, width?: number, height?: number } {
+        return this.geom;
     }
 }
 

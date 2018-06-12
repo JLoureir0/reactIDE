@@ -38,6 +38,7 @@ module.exports = function(grunt) {
               'public/js/eventwebsocket.js',
               'public/js/backend.js',
               'public/js/modelview.js',
+              'public/js/toolbox.js',
               'public/js/main.js'
             ],
             dest: 'public/js/main.min.js'

@@ -4,7 +4,7 @@ import * as Messages from '../messages/messages'
 
 type jsonBlock = {id: number, type?: string, properties?: {name:string, text?:string}, geom?: {x: number, y: number}, inputs?: Array<{id: string}>, outputs?: Array<{id: string}>};
 
-class BlockIf extends Block{
+class BlockWhile extends Block{
 
     private input : number;
     private operator : string;
@@ -21,7 +21,7 @@ class BlockIf extends Block{
         console.log(MessagesHandler.getMessageType(topic));
         if(MessagesHandler.getMessageType(topic) == MessagesHandler.MessageType.REACHEDMYINPUT){
             this.input = parseFloat(message);
-            if(this.booleanOperation(this.input, this.comparable)){
+            if(!this.booleanOperation(this.input, this.comparable)){
                 this.publishFromOutput(this.Outputs[0].id, this.input.toString());
             } else {
                 for(let i = 1; i < this.Outputs.length; i++){
@@ -47,4 +47,5 @@ class BlockIf extends Block{
 
 }
 
-export { BlockIf }
+
+export { BlockWhile }
