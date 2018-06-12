@@ -132,23 +132,22 @@ function executeRequest(json: { event: string, data: any }) {
   const mqttRouter = new MqttRouter(model);
   const eventDispatcher = new EventDispatcher(model, actionBus, mqttRouter, path);
 
-  console.log("< < <")
-  console.log(json.event);
-  console.log(json.data)
-  console.log("> > >")
-
   actionBus.publish(json.event, json.data);
 
   if (json.event === "CREATE_BLOCK") {
-    console.log("Aqui")
     const createdID = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'CREATED_ID', id: model.getLastBlockID() } });
     console.log(createdID)
     sendDataToClient(createdID);
   }
-  else if (json.event === "DELETE_BLOCK"){
-    //TODO apagar cenas
+  else if (json.event === "DESTROY_BLOCK"){
     //enviar snapshot com as cenas apagadas
-    console.log("APAGUEI")
+    //sendSnapshotToClient();
+    console.log("APAGUEI BLOCK")
+  }
+  else if (json.event === "DESTROY_LINK"){
+    //enviar snapshot com as cenas apagadas
+    //sendSnapshotToClient();
+    console.log("APAGUEI CONNECTION")
   }
   else {
     sendSnapshotToClient();

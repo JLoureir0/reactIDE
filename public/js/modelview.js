@@ -79,11 +79,11 @@ class ModelView {
             }
         });
 
-        var handler = function(event){
+        let handler_block = function(event){
             let key = event.key || event.keyCode;
             if(key === 'Delete'){
                 console.log("Delete "+block.id)    
-                backend.send('DELETE_BLOCK', { id: block.id });
+                backend.send('DESTROY_BLOCK', { id: block.id });
             }
         }
 
@@ -91,8 +91,8 @@ class ModelView {
             blockDiv.toggleClass("block-selected");
             let isSelected = blockDiv[0].classList.contains('block-selected')
 
-            if(isSelected)  addEventListener('keydown', handler);
-            else    removeEventListener('keydown', handler);
+            if(isSelected)  addEventListener('keydown', handler_block);
+            else    removeEventListener('keydown', handler_block);
   
         });
 
@@ -145,7 +145,20 @@ class ModelView {
         elementB.on('positionChanged', () => this.updatePath(path, elementA, elementB));
         this.updatePath(path, elementA, elementB);
 
-        let updatePathColor = () => path.strokeColor = (conn.selected ? config.pathSelectedColor : config.pathColor);
+        let handler = function(event){
+            let key = event.key || event.keyCode;
+            if(key === 'Delete'){
+                console.log("Delete "+conn.id)    
+                backend.send('DESTROY_LINK', { id: conn.id });
+            }
+        }
+
+        let updatePathColor = () => {
+            path.strokeColor = (conn.selected ? config.pathSelectedColor : config.pathColor);
+
+            if(conn.selected)  addEventListener('keydown', handler);
+            else    removeEventListener('keydown', handler);
+        }
 
         path.on({
             click: () => { conn.selected = !conn.selected; updatePathColor() },

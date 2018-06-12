@@ -19,6 +19,7 @@ type jsonCompleteBlock = { id: number, type?: string, properties?: { name: strin
 class Model {
 
   private blocks: TsMap<number, Block>;
+  private temp_blocks: TsMap<number, Block>;
   private connections: TsMap<number, jsonLink>;
   private types: TsMap<string, jsonType>;
   private domainEventBus: EventBus;
@@ -30,6 +31,7 @@ class Model {
    */
   constructor(domainEventBus: EventBus) {
     this.blocks = new TsMap();
+    this.temp_blocks = new TsMap();
     this.connections = new TsMap();
     this.types = new TsMap();
     this.domainEventBus = domainEventBus;
@@ -55,7 +57,8 @@ class Model {
    * @param blockInfo 
    */
   public destroyBlock(blockInfo: jsonBlock) {
-    this.blocks.delete(blockInfo.id);
+    this.deleteMap(blockInfo.id, this.blocks.values());
+    //this.blocks.delete(blockInfo.id);
     this.domainEventBus.publish('BLOCK_DESTROYED', blockInfo);
   }
 
@@ -149,7 +152,8 @@ class Model {
    * @param link 
    */
   public destroyLink(link: jsonLink) {
-    this.connections.delete(link.id);
+    this.deleteMap(link.id, this.connections.values());
+    //this.connections.delete(link.id);
     this.domainEventBus.publish('LINK_DESTROYED', link);
   }
 
@@ -201,6 +205,23 @@ class Model {
    */
   public getLastBlockID() {
     return this.blocks.size;
+  }
+
+
+  /**
+   * funcao nojenta porque nao funciona o delete do map
+   */
+  public deleteMap(id: number, x: any){
+    this.temp_blocks.clear();
+    for (let index = 0; index < x.length; index++) {
+      const element = x[index];
+      
+      if(element.Id !== id){
+        this.temp_blocks.set(element.Id, element);
+      }
+    }
+    this.blocks.clear();
+    this.blocks = this.temp_blocks;
   }
 }
 
