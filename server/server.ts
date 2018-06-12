@@ -145,6 +145,11 @@ function executeRequest(json: { event: string, data: any }) {
     console.log(createdID)
     sendDataToClient(createdID);
   }
+  else if (json.event === "DELETE_BLOCK"){
+    //TODO apagar cenas
+    //enviar snapshot com as cenas apagadas
+    console.log("APAGUEI")
+  }
   else {
     sendSnapshotToClient();
   }

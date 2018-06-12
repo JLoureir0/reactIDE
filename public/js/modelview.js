@@ -59,8 +59,8 @@ class ModelView {
         const toggleDiv = $(`#${block.id}-toggle`);
         const bodyDiv = blockDiv.find(`.block-body`);
 
-        if(geometry.x < 200)
-            blockDiv.css({ top: geometry.y, left: geometry.x+200 });
+        if (geometry.x < 200)
+            blockDiv.css({ top: geometry.y, left: geometry.x + 200 });
         else
             blockDiv.css({ top: geometry.y, left: geometry.x });
 
@@ -79,7 +79,22 @@ class ModelView {
             }
         });
 
-        blockDiv.click(() => blockDiv.toggleClass("block-selected"));
+        var handler = function(event){
+            let key = event.key || event.keyCode;
+            if(key === 'Delete'){
+                console.log("Delete "+block.id)    
+                backend.send('DELETE_BLOCK', { id: block.id });
+            }
+        }
+
+        blockDiv.click(() => {
+            blockDiv.toggleClass("block-selected");
+            let isSelected = blockDiv[0].classList.contains('block-selected')
+
+            if(isSelected)  addEventListener('keydown', handler);
+            else    removeEventListener('keydown', handler);
+  
+        });
 
         blockDiv.dblclick(() => {
             blockDiv[0].getElementsByClassName('blockName')[0].contentEditable = "True"
@@ -101,6 +116,8 @@ class ModelView {
             event.stopPropagation();
         });
     }
+
+    
 
     updatePath(path, elementA, elementB) {
         //TODO: OFFSET of 200(toolbox space) should not be hard coded
