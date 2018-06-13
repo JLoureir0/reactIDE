@@ -3,7 +3,7 @@ import * as Messages from '../messages/messages';
 import * as MessagesHandler from '../messages/messageshandler';
 import TSMAP from 'ts-map'
 
-type jsonBlock = {id: number, type?: string, properties?: {name:string, text?:string}, geom?: {x: number, y: number}, inputs?: Array<{id: string}>, outputs?: Array<{id: string}>};
+type jsonBlock = {id: number, type?: string, properties?: {name:string, text?:string}, geom?: {x: number, y: number, expanded?:boolean}, inputs?: Array<{id: string}>, outputs?: Array<{id: string}>};
 type blockState = { value? : number , enabled? : boolean };
 
 class BlockArithmetic extends Block {

@@ -5,7 +5,8 @@
       "type": "input",
       "geom": {
         "x": 100,
-        "y": 100
+        "y": 100,
+	"expanded": false
       },
       "properties": {
         "name": "2",
@@ -23,7 +24,8 @@
       "type": "input",
       "geom": {
         "x": 100,
-        "y": 300
+        "y": 300,
+	"expanded": false
       },
       "properties": {
         "name": "2",
@@ -41,7 +43,8 @@
       "type": "input",
       "geom": {
         "x": 100,
-        "y": 500
+        "y": 500,
+	"expanded": false
       },
       "properties": {
         "name": "7",
@@ -59,7 +62,8 @@
       "type": "function",
       "geom": {
         "x": 300,
-        "y": 200
+        "y": 200,
+	"expanded": false
       },
       "properties": {
         "name": "*"
@@ -96,7 +100,8 @@
       "type": "input",
       "geom": {
         "x": 700,
-        "y": 100
+        "y": 100,
+	"expanded": false
       },
       "properties": {
         "name": "10",
@@ -114,7 +119,8 @@
       "type": "function",
       "geom": {
         "x": 900,
-        "y": 200
+        "y": 200,
+	"expanded": false
       },
       "properties": {
         "name": "+"
@@ -187,7 +193,8 @@
       "type": "trigger",
       "geom": {
         "x": 500,
-        "y": 200
+        "y": 200,
+	"expanded": false
       },
       "properties": {
         "name": "Trigger - 1s"
@@ -208,7 +215,8 @@
       "type": "if",
       "geom": {
         "x": 700,
-        "y": 200
+        "y": 200,
+	"expanded": false
       },
       "properties": {
         "name": "if (x > 10000)"
@@ -234,7 +242,8 @@
       "type": "function",
       "geom": {
         "x": 800,
-        "y": 300
+        "y": 300,
+	"expanded": false
       },
       "properties": {
         "name": "-"
@@ -265,7 +274,8 @@
       "type": "input",
       "geom": {
         "x": 600,
-        "y": 400
+        "y": 400,
+	"expanded": false
       },
       "properties": {
         "name": "7",
@@ -304,7 +314,8 @@
       "type": "while",
       "geom": {
         "x": 750,
-        "y": 450
+        "y": 450,
+	"expanded": false
       },
       "properties": {
         "name": "while (x < 50)"
@@ -336,7 +347,8 @@
       "type": "function",
       "geom": {
         "x": 800,
-        "y": 550
+        "y": 550,
+	"expanded": false
       },
       "properties": {
         "name": "+"
@@ -367,7 +379,8 @@
       "type": "input",
       "geom": {
         "x": 600,
-        "y": 650
+        "y": 650,
+	"expanded": false
       },
       "properties": {
         "name": "1",

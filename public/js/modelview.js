@@ -23,6 +23,7 @@ class ModelView {
   }
 
   drawBlock(block) {
+
       // Make sure some sensible defaults exist
       if (!block.geom) block.geom = {};
 
@@ -48,7 +49,7 @@ class ModelView {
             <div class="block-header-icon"><i class="fa ${type.icon}"></i></div>
             <div class="block-header-title blockName" contentEditable="false">${properties.name || ""}</div>
             <div class="block-header-toggle">
-              <a id="${block.id}-toggle" class="fa ${geometry.expanded ? "fa-caret-down" : "fa-caret-right"}"></a>
+              <a id="${block.id}-toggle" class="fa ${geometry.expanded ? "fa-caret-down block-expanded" : "fa-caret-right"} "></a>
             </div>
           </div>
           <div class="block-body">
@@ -96,11 +97,12 @@ class ModelView {
       });
 
       toggleDiv.click((event) => {
-          toggleDiv.toggleClass("fa-caret-right").toggleClass("fa-caret-down");
-          blockDiv.toggleClass("block-expanded");
+          //toggleDiv.toggleClass("fa-caret-right").toggleClass("fa-caret-down");
+          //blockDiv.toggleClass("block-expanded");
 
           block.geom.expanded = !block.geom.expanded;
 
+          changeBlockGeometry(block.id, block.geom.x, block.geom.y, block.geom.expanded);
           this.triggerPositionChanged(block);
 
           event.stopPropagation();

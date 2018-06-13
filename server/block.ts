@@ -5,7 +5,7 @@ import * as MQTT from 'mqtt';
 import * as MessagesHandler from './messages/messageshandler';
 import * as Messages from './messages/messages';
 
-type jsonBlock = {id: number, type?: string, properties?: {name:string, text?:string, enabled?: boolean}, geom?: {x: number, y: number}, inputs?: Array<{id: string}>, outputs?: Array<{id: string}>};
+type jsonBlock = {id: number, type?: string, properties?: {name:string, text?:string, enabled?: boolean}, geom?: {x: number, y: number, expanded?:boolean}, inputs?: Array<{id: string}>, outputs?: Array<{id: string}>};
 
 /**
  * 
@@ -15,7 +15,7 @@ class Block {
     private mqttClient: MQTT.Client;
     private id: number;
     private type: string;
-    private geom?: {x:number,y:number};
+    private geom?: {x:number, y:number, expanded?:boolean};
     private properties?: {name:string, text?:string, enabled?: boolean};
     private inputs?: Array<{id:string}>;
     private outputs?: Array<{id:string}>;

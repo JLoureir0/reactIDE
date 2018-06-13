@@ -10,7 +10,7 @@ import { EventBus } from './eventbus';
 type jsonLink = {id: number, from: {node: string}, to: {node: string}};
 type jsonType = {id: string, icon?: string, style?: string};
 type jsonBlock = {id: number, type: string, properties: {name:string, text?:string, enabled?:boolean}};
-type jsonCompleteBlock = {id: number, type?: string, properties?: {name:string, text?:string, enabled?:boolean}, geom?: {x: number, y: number}, inputs?: Array<{id: string}>, outputs?: Array<{id: string}>};
+type jsonCompleteBlock = {id: number, type?: string, properties?: {name:string, text?:string, enabled?:boolean}, geom?: {x: number, y: number, expanded?:boolean}, inputs?: Array<{id: string}>, outputs?: Array<{id: string}>};
 
 
 /**
@@ -76,6 +76,7 @@ class Model {
       };
       new_prop.geom.x = blockInfo.geom.x;
       new_prop.geom.y = blockInfo.geom.y;
+      new_prop.geom.expanded = blockInfo.geom.expanded;
 
       block.overrideDetails(new_prop, property);
       this.domainEventBus.publish(eventId, new_prop);
@@ -91,7 +92,7 @@ class Model {
    * 
    * @param blockInfo 
    */
-  public changeBlockGeometry(blockInfo: { id: number, geom: { x: number, y: number } }) {
+  public changeBlockGeometry(blockInfo: { id: number, geom: { x: number, y: number, expanded?:boolean } }) {
     this.overrideBlockDetails(blockInfo, 'geom', 'BLOCK_GEOMETRY_CHANGED');
   }
 
