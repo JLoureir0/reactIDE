@@ -83,12 +83,12 @@ function createLink(nodeA, nodeB) {
     backend.send(request.event, request.data);
 }
 
-function changeBlockLocation(blockID, x, y) {
+function changeBlockGeometry(blockID, x, y, expanded = false) {
     //TODO: OFFSET of 200(toolbox space) should not be hard coded
-    if (!Number.isInteger(blockID) || typeof blockID == undefined || typeof x == undefined || typeof y == undefined || arguments.length != 3 || x < 200)
+    if (!Number.isInteger(blockID) || typeof blockID == undefined || typeof x == undefined || typeof y == undefined || arguments.length != 4 || x < 200)
         return console.log("Error: Wrong inputs.");
 
-    const request = { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: blockID, geom: { x: x, y: y } } };
+    const request = { event: 'CHANGE_BLOCK_GEOMETRY', data: { id: blockID, geom: { x: x, y: y, expanded: expanded } } };
     backend.send(request.event, request.data);
 }
 
@@ -99,7 +99,7 @@ function help() {
     console.log("function_name: 'changeOutputs'; arguments: 'blockID, array of nodes';\nExample: changeOutputs(1, ['A', 'B']);");
     console.log("function_name: 'changeName'; arguments: 'blockID, name';\nExample: changeName(1, '100');");
     console.log("function_name: 'createLink'; arguments: 'node1, node2';\nExample: createLink('A', 'B');");
-    console.log("function_name: 'changeBlockLocation'; arguments: 'blockID, coordinateX, coordinateY';\nExample: changeBlockLocation(1, 100, 200);");
+    console.log("function_name: 'changeBlockGeometry'; arguments: 'blockID, coordinateX, coordinateY';\nExample: changeBlockGeometry(1, 100, 200);");
 }
 
 
@@ -112,7 +112,7 @@ $("#diagram").droppable({
             modelview.model.blocks.forEach(block => {
                 //checks if block exists, if so, only position changed
                 if (block.id == ui.draggable[0]['id']) {
-                    changeBlockLocation(parseInt(ui.draggable[0]['id']), block.geom.x, block.geom.y)
+                    changeBlockGeometry(parseInt(ui.draggable[0]['id']), block.geom.x, block.geom.y, block.geom.expanded);
                 }
             });
 

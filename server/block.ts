@@ -2,8 +2,10 @@
  * Class dependencies
  */
 import * as MQTT from 'mqtt';
+import * as MessagesHandler from './messages/messageshandler';
+import * as Messages from './messages/messages';
 
-type jsonBlock = { id: number, type?: string, properties?: { name: string, text?: string }, geom?: { x: number, y: number }, inputs?: Array<{ id: string }>, outputs?: Array<{ id: string }> };
+type jsonBlock = {id: number, type?: string, properties?: {name:string, text?:string, enabled?: boolean}, geom?: {x: number, y: number, expanded?:boolean}, inputs?: Array<{id: string}>, outputs?: Array<{id: string}>};
 
 /**
  * 
@@ -13,10 +15,10 @@ class Block {
     private mqttClient: MQTT.Client;
     private id: number;
     private type: string;
-    private geom?: { x: number, y: number, expanded?: boolean, width?: number, height?: number };
-    private properties?: { name: string, text?: string };
-    private inputs?: Array<{ id: string }>;
-    private outputs?: Array<{ id: string }>;
+    private geom?: {x:number, y:number, expanded?:boolean};
+    private properties?: {name:string, text?:string, enabled?: boolean};
+    private inputs?: Array<{id:string}>;
+    private outputs?: Array<{id:string}>;
 
     /**
      * 
@@ -52,8 +54,16 @@ class Block {
      * @param info 
      * @param property 
      */
-    public overrideDetails(info: jsonBlock, property: string) {
-        this[property] = info[property];
+    public overrideDetails(info: jsonBlock, property: string) 
+    {
+        if(property == "properties") {
+            // To edit with new values
+            Object.keys(info.properties).forEach((key) => {
+                this.properties[key] = info.properties[key];
+            });
+        } else {
+            this[property] = info[property];
+        }        
         if (property == "inputs") {
             this.subscribeInputs();
         } else if (property == "outputs") {
@@ -126,7 +136,7 @@ class Block {
     }
 
     /**
-     * get ID of the block
+     * Get ID of the block
      */
     get Id(): number {
         return this.id;
@@ -140,7 +150,7 @@ class Block {
         return this.inputs;
     }
 
-    get Properties(): { name: string, text?: string } {
+    get Properties(): {name: string, text?: string, enabled?:boolean} {
         return this.properties;
     }
 

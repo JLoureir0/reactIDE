@@ -1,5 +1,16 @@
 export function getValueFromMessage(message: string) : number {
-    return parseFloat(message);
+    const res:string[] = message.split("-");
+    return parseFloat(res[0]);
+}
+
+export function getEnabledFromMessage(message: string) : boolean {
+    const res:string[] = message.split("-");
+
+    if(res[1] == "false") {
+        return false;
+    } else {
+        return true;
+    }
 }
 
 export function getNodeFromTopic(topic: string) : string {
