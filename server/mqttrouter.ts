@@ -75,8 +75,8 @@ class MqttRouter {
      * @param {Buffer} message - Message that was received
      */
     public routeMessage(topic: string, message: Buffer) {
-        console.log('RECEIVED:');
-        console.log(`Topic: ${topic} - Message: ${message.toString()}`);
+        //console.log('RECEIVED:');
+        //console.log(`Topic: ${topic} - Message: ${message.toString()}`);
 
         const topicArray = topic.split('/');
 
@@ -93,8 +93,8 @@ class MqttRouter {
      * @param {Buffer} message - message sent
      */
     public redirectOutput(nodeID: string, message: Buffer) {
-        console.log('REDIRECTING TO:');
-        console.log(`Topic: ${this.nodes[this.links[nodeID]]}/INPUTS/${this.links[nodeID]} - Message: ${message.toString()}`);
+        //console.log('REDIRECTING TO:');
+        //console.log(`Topic: ${this.nodes[this.links[nodeID]]}/INPUTS/${this.links[nodeID]} - Message: ${message.toString()}`);
 
         this.mqttClient.publish(`${this.nodes[this.links[nodeID]]}/INPUTS/${this.links[nodeID]}`, message);
     }
@@ -107,8 +107,8 @@ class MqttRouter {
      * @param {Buffer} message - message sent
      */
     public redirectTake(nodeID: string, message: Buffer) {
-        console.log('REDIRECTING TO:');
-        console.log(`Topic: ${this.nodes[this.reverseLinks[nodeID]]}/TAKE/${this.reverseLinks[nodeID]} - Message: ${message.toString()}`);
+        //console.log('REDIRECTING TO:');
+        //console.log(`Topic: ${this.nodes[this.reverseLinks[nodeID]]}/TAKE/${this.reverseLinks[nodeID]} - Message: ${message.toString()}`);
 
         this.mqttClient.publish(`${this.nodes[this.reverseLinks[nodeID]]}/TAKE/${this.reverseLinks[nodeID]}`, message);
     }
