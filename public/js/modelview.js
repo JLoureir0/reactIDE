@@ -7,14 +7,42 @@ class ModelView {
     paper.view.autoUpdate = true;
 
     backend.on('DOMAIN_EVENT', (topic, msg) => {
-      if (msg.event === 'SNAPSHOT') {
-          this.model = msg.data;
-          this.loadModel();
-      } if (msg.event === 'select-block') {
-          $(`#${msg.id}`).addClass("block-selected");
-      } else if (msg.event === 'unselect-block') {
-          $(`#${msg.id}`).removeClass("block-selected");
-      }
+      switch(msg.event) { 
+        case 'SNAPSHOT': { 
+            this.model = msg.data;
+            this.loadModel();
+
+            break; 
+        } 
+        case 'select-block': { 
+            $(`#${msg.id}`).addClass("block-selected");
+
+            break;
+        } 
+        case 'unselect-block': { 
+            $(`#${msg.id}`).removeClass("block-selected");
+
+            break; 
+        } 
+        case 'CONSOLE_UPDATED': { 
+            console.log('Output vai ser atualizado...');
+            Object.keys(this.model.blocks).forEach((key) => {
+                const block = this.model.blocks[key];
+                if(block.id === msg.id) {
+                    this.model.blocks[key].properties.text = msg.text;
+                    $(`#${msg.id}`).remove();
+                    this.drawBlock(block);
+                }
+            });    
+
+            break; 
+        } 
+        default: {
+            break; 
+        } 
+     } 
+
+
     });
   }
 

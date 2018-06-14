@@ -13,7 +13,7 @@
   },
   "homepage": "https://github.com/hugoferreira/vpl#readme",
   "scripts": {
-    "start": "tsc && opn public/main.html && node built/server.js",
+    "start": "tsc && opn public/main.html && node built/index.js",
     "build-ts": "tsc"
   },
   "devDependencies": {
