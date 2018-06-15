@@ -18,6 +18,7 @@ class BlockWhile extends Block{
     }
 
     public run(topic: string, message: string) : void {
+        super.run(topic, message);
         console.log(MessagesHandler.getMessageType(topic));
         if(MessagesHandler.getMessageType(topic) == MessagesHandler.MessageType.REACHEDMYINPUT){
             this.input = parseFloat(message);

@@ -122,6 +122,14 @@ class MqttRouter {
         this.links[link.from.node] = link.to.node;
         this.reverseLinks[link.to.node] = link.from.node;
     }
+
+    public destroyLink(link: {id: number, from: {node: string}, to: {node: string}}) {
+        /*
+        todo: receber from e to
+        delete this.links[link.from.node];
+        delete this.links[link.to.node];
+        */        
+    }
 };
 
 export { MqttRouter }

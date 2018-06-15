@@ -30,7 +30,8 @@ class EventDispatcher {
     // MqttDispatcher
     actionBus.on('CHANGE_BLOCK_INPUTS', block => mqttRouter.subscribeInputNodes(block));
     actionBus.on('CHANGE_BLOCK_OUTPUTS', block => mqttRouter.subscribeOutputNodes(block));
-    actionBus.on('CREATE_LINK', link => mqttRouter.createLink(link))
+    actionBus.on('CREATE_LINK', link => mqttRouter.createLink(link));
+    actionBus.on('DESTROY_LINK', link => mqttRouter.destroyLink(link));
   }
 }
 

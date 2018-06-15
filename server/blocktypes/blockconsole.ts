@@ -12,6 +12,9 @@ class BlockConsole extends Block {
     }
 
     public run(topic: string, message: string){
+
+        super.run(topic, message);
+        
         if(MessagesHandler.getMessageType(topic) == MessagesHandler.MessageType.REACHEDMYINPUT){
             this.Properties['text'] = message;
         } else {

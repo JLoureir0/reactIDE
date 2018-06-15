@@ -55,10 +55,8 @@ class Model {
    * @param blockInfo 
    */
   public destroyBlock(blockInfo: jsonBlock) {
-    console.log(this.blocks);
     this.deleteBlock(blockInfo.id);
     //this.blocks.delete(blockInfo.id);
-    console.log(this.blocks);
     this.domainEventBus.publish('BLOCK_DESTROYED', blockInfo);
   }
 
@@ -152,6 +150,26 @@ class Model {
    * @param link 
    */
   public destroyLink(link: jsonLink) {
+    let link_info = this.connections.get(link.id);
+    console.log(link_info);
+
+    let from: string = link_info.from.node;
+    let to: string = link_info.to.node;
+
+    let hasF, hasT: boolean = false;
+    for (let index = 0; index < this.blocks.size; index++) {
+      const block = this.blocks.values()[index];
+
+      console.log(block.Id);
+
+      if(!hasF) hasF = block.deleteInput(to);
+      if(!hasT) hasT = block.deleteOutput(from);
+      
+      //ja encontrou os 2
+      if(hasF && hasT) break;
+    }
+    console.log("done");
+
     this.deleteLink(link.id);
     //this.connections.delete(link.id);
     this.domainEventBus.publish('LINK_DESTROYED', link);

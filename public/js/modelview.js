@@ -155,7 +155,7 @@ class ModelView {
             let key = event.key || event.keyCode;
             if (key === 'Delete') {
                 console.log("Delete " + conn.id)
-                backend.send('DESTROY_LINK', { id: conn.id });
+                backend.send('DESTROY_LINK', { id: conn.id});
             }
         }
 

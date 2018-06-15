@@ -2,6 +2,8 @@
  * Class dependencies
  */
 import * as MQTT from 'mqtt';
+import * as Messages from './messages/messages';
+import * as MessagesHandler from './messages/messageshandler';
 
 type jsonBlock = { id: number, type?: string, properties?: { name: string, text?: string }, geom?: { x: number, y: number }, inputs?: Array<{ id: string }>, outputs?: Array<{ id: string }> };
 
@@ -44,7 +46,7 @@ class Block {
      * @param message 
      */
     public run(topic: string, message: string) {
-
+        //delete ID?
     }
 
     /**
@@ -123,6 +125,48 @@ class Block {
                 this.mqttClient.publish(this.id + "/OUTPUTS/" + this.outputs[i]['id'], message);
             }
         }
+    }
+
+    /**
+     * 
+     */
+    public deleteInput(id: string): boolean {
+
+        console.log("inputs")
+        console.log({id: id});
+        console.log(this.inputs);
+
+        if(this.inputs.length > 0)
+        {
+            let new_inputs = this.inputs.filter(inp => { return (inp.id !== id) });
+            console.log(new_inputs);
+
+            if(new_inputs.length !== this.inputs.length){
+                this.inputs = new_inputs;
+                this.run('','work');
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 
+     */
+    public deleteOutput(id: string) : boolean {
+
+        if(this.outputs.length > 0)
+        {
+            let new_outputs = this.outputs.filter(inp => { return (inp.id !== id) });
+            console.log(new_outputs);
+
+            if(new_outputs.length !== this.outputs.length){
+                this.outputs = new_outputs;
+                this.run('','work');
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
