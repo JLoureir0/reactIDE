@@ -134,8 +134,6 @@ class Block {
         if(this.inputs.length > 0)
         {
             let new_inputs = this.inputs.filter(inp => { return (inp.id !== id) });
-            console.log(new_inputs);
-
             if(new_inputs.length !== this.inputs.length){
                 this.inputs = new_inputs;
                 this.run('','work');
@@ -152,8 +150,6 @@ class Block {
         if(this.outputs.length > 0)
         {
             let new_outputs = this.outputs.filter(inp => { return (inp.id !== id) });
-            console.log(new_outputs);
-
             if(new_outputs.length !== this.outputs.length){
                 this.outputs = new_outputs;
                 this.run('','work');

@@ -73,14 +73,12 @@ class Model {
     block.Inputs.forEach(inp => {
       //encontrar o link que tem este inp.id nos seus 'to'
       let id: number = this.findToLink(inp.id);
-      console.log("destroy link "+id);
       this.destroyLink({id: id});
     });
 
     block.Outputs.forEach(inp => {
       //encontrar o link que tem este inp.id nos seus 'from'
       let id: number = this.findFromLink(inp.id);
-      console.log("destroy link "+id);
       this.destroyLink({id: id}); 
     });
 
@@ -201,7 +199,6 @@ class Model {
   public destroyLink(link: jsonLink) {
     let link_info = this.connections.get(link.id);
     if(link_info === undefined) return;
-    console.log(link_info);
 
     let from: string = link_info.from.node;
     let to: string = link_info.to.node;
@@ -210,15 +207,12 @@ class Model {
     for (let index = 0; index < this.blocks.size; index++) {
       const block = this.blocks.values()[index];
 
-      console.log(block.Id);
-
       if (!hasF) hasF = block.deleteInput(to);
       if (!hasT) hasT = block.deleteOutput(from);
 
       //ja encontrou os 2
       if (hasF && hasT) break;
     }
-    console.log("done");
 
     this.deleteLink(link.id);
     //this.connections.delete(link.id);
@@ -292,7 +286,6 @@ class Model {
     }
     this.blocks.clear();
     this.blocks = temp_blocks;
-    console.log("delete done")
   }
 
   /**
@@ -311,7 +304,6 @@ class Model {
     }
     this.connections.clear();
     this.connections = temp_links;
-    console.log("delete done")
   }
 }
 

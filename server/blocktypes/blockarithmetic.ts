@@ -90,7 +90,6 @@ class BlockArithmetic extends Block {
         }
         this.inputsMap.clear();
         this.inputsMap = temp_inputs;
-        console.log("delete done")
     }
 }
 
