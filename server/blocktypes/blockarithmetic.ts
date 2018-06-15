@@ -4,11 +4,10 @@ import * as MessagesHandler from '../messages/messageshandler';
 import TSMAP from 'ts-map'
 
 type jsonBlock = {id: number, type?: string, properties?: {name:string, text?:string}, geom?: {x: number, y: number, expanded?:boolean}, inputs?: Array<{id: string}>, outputs?: Array<{id: string}>};
-type blockState = { value? : number , enabled? : boolean };
+type blockState = { value? : string , enabled? : boolean };
 
 class BlockArithmetic extends Block {
 
-    private numberInputs: Array<number> = new Array();
     private inputsMap: TSMAP<string, blockState> = new TSMAP<string, blockState>();
     private operator: string;
 
@@ -21,17 +20,14 @@ class BlockArithmetic extends Block {
     {
         if(MessagesHandler.getMessageType(topic) == MessagesHandler.MessageType.REACHEDMYINPUT) {
             const key:string = MessagesHandler.getNodeFromTopic(topic);
-            const value:number = MessagesHandler.getValueFromMessage(message);
-            const enabled:boolean = MessagesHandler.getEnabledFromMessage(message);
-
-            if(!isNaN(value)){       
-                this.inputsMap.set(key, { value : value , enabled : enabled });
-            }
+            const value:string = MessagesHandler.getValueFromMessage(message);
+            const enabled:boolean = MessagesHandler.getEnabledFromMessage(message);     
+            this.inputsMap.set(key, { value : value , enabled : enabled });
         }
 
         if (this.inputsMap.size == this.Inputs.length) {
             //if the map has all the necessary inputs, send message
-            let res:number = 0;
+            let res:string = "0";
             let firstValue:boolean = true;
             this.inputsMap.forEach((blockState, key) => {
                 // If block is inactive it doesn't use its value
@@ -57,12 +53,31 @@ class BlockArithmetic extends Block {
         }  
     }
 
-    private makeOperation(res: number, value :number) : number {
+    private makeOperation(res: string, value :string) : string {
+
+        let resNumber : number = Number(res);
+        let valueNumber : number = Number(value);
+
+        if(this.operator == "+"){
+            if(!isNaN(resNumber)){
+                if(!isNaN(valueNumber)){
+                    return String(resNumber + valueNumber);
+                } else {
+                    return resNumber + value;
+                }
+            } else {
+                if(!isNaN(valueNumber)){
+                    return res + valueNumber;
+                } else {
+                    return res + value;
+                }
+            }
+        }
+
         switch(this.operator){
-            case "+": return res + value;
-            case "-": return res - value;
-            case "*": return res * value;
-            case "/": return res / value;
+            case "-": return String(resNumber - valueNumber);
+            case "*": return String(resNumber * valueNumber);
+            case "/": return String(resNumber / valueNumber);
             default: return res;
         }
     }

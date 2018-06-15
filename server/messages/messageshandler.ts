@@ -1,6 +1,5 @@
-export function getValueFromMessage(message: string) : number {
-    const res:string[] = message.split("-");
-    return parseFloat(res[0]);
+export function getValueFromMessage(message: string) : string {
+    return message.split("-")[0];
 }
 
 export function getEnabledFromMessage(message: string) : boolean {
