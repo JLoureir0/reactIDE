@@ -29,7 +29,7 @@ class BlockArithmetic extends Block {
 
         if (this.inputsMap.size == this.Inputs.length) {
             //if the map has all the necessary inputs, send message
-            let res: number;
+            let res: number = 0;
             let firstValue: boolean = true;
             this.inputsMap.forEach((value, key) => {
                 if (firstValue) {

@@ -7,7 +7,7 @@ import { Block } from './block';
 import TsMap from "ts-map";
 import { EventBus } from './eventbus';
 
-type jsonLink = { id: number, from: { node: string }, to: { node: string } };
+type jsonLink = { id: number, from?: { node: string }, to?: { node: string } };
 type jsonType = { id: string, icon?: string, style?: string };
 type jsonBlock = { id: number, type: string, properties: { name: string, text?: string } };
 type jsonCompleteBlock = { id: number, type?: string, properties?: { name: string, text?: string }, geom?: { x: number, y: number }, inputs?: Array<{ id: string }>, outputs?: Array<{ id: string }> };
@@ -55,9 +55,58 @@ class Model {
    * @param blockInfo 
    */
   public destroyBlock(blockInfo: jsonBlock) {
+    //objetivo, percorrer todos os inputs e outputs, descobrir quais são os id's desses links e fazer destroy
+    this.destroyBlockLinks(blockInfo.id);
+    //delete block
     this.deleteBlock(blockInfo.id);
     //this.blocks.delete(blockInfo.id);
     this.domainEventBus.publish('BLOCK_DESTROYED', blockInfo);
+  }
+
+  /**
+   * 
+   * @param block_id 
+   */
+  private destroyBlockLinks(block_id: number) {
+    let block: Block = this.blocks.get(block_id);
+
+    block.Inputs.forEach(inp => {
+      //encontrar o link que tem este inp.id nos seus 'to'
+      let id: number = this.findToLink(inp.id);
+      console.log("destroy link "+id);
+      this.destroyLink({id: id});
+    });
+
+    block.Outputs.forEach(inp => {
+      //encontrar o link que tem este inp.id nos seus 'from'
+      let id: number = this.findFromLink(inp.id);
+      console.log("destroy link "+id);
+      this.destroyLink({id: id}); 
+    });
+
+  }
+
+  /**
+   * 
+   * @param name 
+   */
+  private findToLink(name: string): number{
+    let array = this.connections.values();
+    for (let index = 0; index < array.length; index++) {
+      const element = array[index];
+      if(element.to.node === name) return element.id;
+    }
+  }
+
+  /**
+   * 
+   */
+  private findFromLink(name: string): number{
+    let array = this.connections.values();
+    for (let index = 0; index < array.length; index++) {
+      const element = array[index];
+      if(element.from.node === name) return element.id;
+    }
   }
 
   /**
@@ -151,6 +200,7 @@ class Model {
    */
   public destroyLink(link: jsonLink) {
     let link_info = this.connections.get(link.id);
+    if(link_info === undefined) return;
     console.log(link_info);
 
     let from: string = link_info.from.node;
@@ -162,11 +212,11 @@ class Model {
 
       console.log(block.Id);
 
-      if(!hasF) hasF = block.deleteInput(to);
-      if(!hasT) hasT = block.deleteOutput(from);
-      
+      if (!hasF) hasF = block.deleteInput(to);
+      if (!hasT) hasT = block.deleteOutput(from);
+
       //ja encontrou os 2
-      if(hasF && hasT) break;
+      if (hasF && hasT) break;
     }
     console.log("done");
 
@@ -229,14 +279,14 @@ class Model {
   /**
    * funcao nojenta porque nao funciona o delete do map
    */
-  public deleteBlock(id: number){
+  private deleteBlock(id: number) {
     let temp_blocks: TsMap<number, Block> = new TsMap();
     let x = this.blocks.values()
 
     for (let index = 0; index < x.length; index++) {
       const element = x[index];
-      
-      if(element.Id !== id){
+
+      if (element.Id !== id) {
         temp_blocks.set(element.Id, element);
       }
     }
@@ -245,17 +295,17 @@ class Model {
     console.log("delete done")
   }
 
-    /**
-   * funcao nojenta porque nao funciona o delete do map
-   */
-  public deleteLink(id: number){
-    let temp_links:TsMap<number, jsonLink> = new TsMap();
+  /**
+ * funcao nojenta porque nao funciona o delete do map
+ */
+  private deleteLink(id: number) {
+    let temp_links: TsMap<number, jsonLink> = new TsMap();
     let x = this.connections.values();
 
     for (let index = 0; index < x.length; index++) {
       const element = x[index];
-      
-      if(element.id !== id){
+
+      if (element.id !== id) {
         temp_links.set(element.id, element);
       }
     }

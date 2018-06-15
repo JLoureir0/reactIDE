@@ -131,11 +131,6 @@ class Block {
      * 
      */
     public deleteInput(id: string): boolean {
-
-        console.log("inputs")
-        console.log({id: id});
-        console.log(this.inputs);
-
         if(this.inputs.length > 0)
         {
             let new_inputs = this.inputs.filter(inp => { return (inp.id !== id) });
@@ -154,7 +149,6 @@ class Block {
      * 
      */
     public deleteOutput(id: string) : boolean {
-
         if(this.outputs.length > 0)
         {
             let new_outputs = this.outputs.filter(inp => { return (inp.id !== id) });
