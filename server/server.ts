@@ -11,7 +11,7 @@ import * as MQTT from 'mqtt';
 class Server {
   public static readonly PORT:number = 8081;
   public static readonly MQTT_URL:string = 'mqtt://localhost:1883';
-  public static readonly MODEL_PATH:string = 'server/models/model-original.json';
+  public static readonly MODEL_PATH:string = 'server/models/model-test-delete.json';
   public static socket:WS;
   private static websocketServer;
   private static model:Model;
@@ -114,16 +114,23 @@ class Server {
    * Function to execute the client request
    */
   private static executeRequest(json: { event: string, data: any }) {
-    console.log("< < <")
-    console.log(json.event);
-    console.log(json.data)
-    console.log("> > >")
-
     Server.eventBus.publish(json.event, json.data);
 
     if (json.event === "CREATE_BLOCK") {
       const createdID = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'CREATED_ID', id: Server.model.getLastBlockID() } });
       Server.sendDataToClient(createdID);
+    }
+    else if (json.event === "DESTROY_BLOCK"){
+      const deletedID = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'DESTROYED_BLOCK', id: json.data.id } });
+      Server.sendDataToClient(deletedID);
+      //TODO secalhar mudar isto
+      Server.sendSnapshotToClient();
+    }
+    else if (json.event === "DESTROY_LINK"){
+      const deletedID = JSON.stringify({ event: 'DOMAIN_EVENT', data: { event: 'DESTROYED_LINK', id: json.data.id } });
+      Server.sendDataToClient(deletedID);
+      //TODO secalhar mudar isto
+      Server.sendSnapshotToClient();
     }
     else {
       Server.sendSnapshotToClient();
