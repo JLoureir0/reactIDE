@@ -14,6 +14,7 @@ class ModelView {
 
                     break;
                 }
+                /*
                 case 'select-block': {
                     $(`#${msg.id}`).addClass("block-selected");
 
@@ -24,6 +25,7 @@ class ModelView {
 
                     break;
                 }
+                */
                 case 'CONSOLE_UPDATED': {
                     console.log('Output vai ser atualizado...');
                     Object.keys(this.model.blocks).forEach((key) => {
@@ -98,20 +100,10 @@ class ModelView {
         if (geometry.width) bodyDiv.css({ width: geometry.width });
         if (geometry.height) bodyDiv.css({ height: geometry.height });
         if (properties.text) bodyDiv.append(`<p>${properties.text}</p>`);
-        if (block.type == 'input') bodyDiv.append('<div class="block-input-options"><input type="checkbox">Enabled</div>');
+        if (block.type === 'input') bodyDiv.append('<div class="block-input-options"><input type="checkbox">Enabled</div>');
 
         const enabledCheckbox = bodyDiv.find(`.block-input-options`).find('input:checkbox:first');
         if (properties.enabled) enabledCheckbox.prop('checked', true);
-
-        blockDiv.draggable({
-            grid: config.grid,
-            drag: (event, ui) => {
-                block.geom.y = ui.position.top;
-                block.geom.x = ui.position.left;
-                this.triggerPositionChanged(block);
-                event.stopPropagation();
-            }
-        });
 
         let handler_block = function (event) {
             let key = event.key || event.keyCode;
@@ -120,6 +112,18 @@ class ModelView {
                 backend.send('DESTROY_BLOCK', { id: block.id });
             }
         }
+
+        blockDiv.draggable({
+            grid: config.grid,
+            drag: (event, ui) => {
+                block.geom.y = ui.position.top;
+                block.geom.x = ui.position.left;
+                this.triggerPositionChanged(block);
+                //stupid but...
+                removeEventListener('keydown', handler_block);
+                event.stopPropagation();
+            }
+        });
 
         backend.on('DOMAIN_EVENT', (topic, msg) => {
             if (msg.event === 'DESTROYED_BLOCK') {
@@ -131,9 +135,12 @@ class ModelView {
             blockDiv.toggleClass("block-selected");
             let isSelected = blockDiv[0].classList.contains('block-selected')
 
-            if (isSelected) addEventListener('keydown', handler_block);
+            console.log(isSelected + " block "+block.id);
+
+            if (isSelected) addEventListener('keydown', handler_block); 
             else removeEventListener('keydown', handler_block);
 
+            event.stopPropagation();
         });
 
         blockDiv.dblclick(() => {
@@ -159,7 +166,8 @@ class ModelView {
 
         enabledCheckbox.change((event) => {
             this.changeBlockEnabled(block.id, enabledCheckbox[0].checked);
-
+            //stupid but...
+            removeEventListener('keydown', handler_block);
             event.stopPropagation();
         });
     }

@@ -69,6 +69,7 @@ class Model {
    */
   private destroyBlockLinks(block_id: number) {
     let block: Block = this.blocks.get(block_id);
+    if(block === undefined) return;
 
     block.Inputs.forEach(inp => {
       //encontrar o link que tem este inp.id nos seus 'to'
