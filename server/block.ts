@@ -2,10 +2,8 @@
  * Class dependencies
  */
 import * as MQTT from 'mqtt';
-import * as MessagesHandler from './messages/messageshandler';
-import * as Messages from './messages/messages';
 
-type jsonBlock = {id: number, type?: string, properties?: {name:string, text?:string, enabled?: boolean}, geom?: {x: number, y: number, expanded?:boolean}, inputs?: Array<{id: string}>, outputs?: Array<{id: string}>};
+type jsonBlock = { id: number, type?: string, properties?: { name: string, text?: string, enabled?: boolean }, geom?: { x: number, y: number, expanded?: boolean }, inputs?: Array<{ id: string }>, outputs?: Array<{ id: string }> };
 
 /**
  * 
@@ -15,10 +13,10 @@ class Block {
     private mqttClient: MQTT.Client;
     private id: number;
     private type: string;
-    private geom?: {x:number, y:number, expanded?:boolean};
-    private properties?: {name:string, text?:string, enabled?: boolean};
-    private inputs?: Array<{id:string}>;
-    private outputs?: Array<{id:string}>;
+    private geom?: { x: number, y: number, expanded?: boolean };
+    private properties?: { name: string, text?: string, enabled?: boolean };
+    private inputs?: Array<{ id: string }>;
+    private outputs?: Array<{ id: string }>;
 
     /**
      * 
@@ -46,7 +44,7 @@ class Block {
      * @param message 
      */
     public run(topic: string, message: string) {
-
+        //delete ID?
     }
 
     /**
@@ -54,16 +52,15 @@ class Block {
      * @param info 
      * @param property 
      */
-    public overrideDetails(info: jsonBlock, property: string) 
-    {
-        if(property == "properties") {
+    public overrideDetails(info: jsonBlock, property: string) {
+        if (property == "properties") {
             // To edit with new values
             Object.keys(info.properties).forEach((key) => {
                 this.properties[key] = info.properties[key];
             });
         } else {
             this[property] = info[property];
-        }        
+        }
         if (property == "inputs") {
             this.subscribeInputs();
         } else if (property == "outputs") {
@@ -136,7 +133,37 @@ class Block {
     }
 
     /**
-     * Get ID of the block
+     * 
+     */
+    public deleteInput(id: string): boolean {
+        if (this.inputs.length > 0) {
+            let new_inputs = this.inputs.filter(inp => { return (inp.id !== id) });
+            if (new_inputs.length !== this.inputs.length) {
+                this.inputs = new_inputs;
+                this.run('', 'work');
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 
+     */
+    public deleteOutput(id: string): boolean {
+        if (this.outputs.length > 0) {
+            let new_outputs = this.outputs.filter(inp => { return (inp.id !== id) });
+            if (new_outputs.length !== this.outputs.length) {
+                this.outputs = new_outputs;
+                this.run('', 'work');
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * get ID of the block
      */
     get Id(): number {
         return this.id;
@@ -150,7 +177,7 @@ class Block {
         return this.inputs;
     }
 
-    get Properties(): {name: string, text?: string, enabled?:boolean} {
+    get Properties(): { name: string, text?: string, enabled?: boolean } {
         return this.properties;
     }
 

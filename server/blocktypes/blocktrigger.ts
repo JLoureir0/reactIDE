@@ -14,6 +14,7 @@ class BlockTrigger extends Block {
     }
 
     public run(topic: string, message: string){
+        super.run(topic, message);
         this.publishFromOutputs(message);
     }
 }

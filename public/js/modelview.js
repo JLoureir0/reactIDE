@@ -1,96 +1,95 @@
 class ModelView {
-  constructor(backend) {
-    this.model = {};
-    this.backend = backend;
-    this.selectedBlocks = {};
+    constructor(backend) {
+        this.model = {};
+        this.backend = backend;
+        this.selectedBlocks = {};
 
-    paper.setup("myCanvas");
-    paper.view.autoUpdate = true;
+        paper.setup("myCanvas");
+        paper.view.autoUpdate = true;
 
-    backend.on('DOMAIN_EVENT', (topic, msg) => {
-      switch(msg.event) { 
-        case 'SNAPSHOT': { 
-            this.model = msg.data;
-            this.loadModel();
+        backend.on('DOMAIN_EVENT', (topic, msg) => {
+            switch(msg.event) { 
+                case 'SNAPSHOT': { 
+                    this.model = msg.data;
+                    this.loadModel();
 
-            break; 
-        } 
-        case 'select-block': { 
-            $(`#${msg.id}`).addClass("block-selected");
+                    break; 
+                } 
+                /*case 'select-block': { 
+                    $(`#${msg.id}`).addClass("block-selected");
 
-            break;
-        } 
-        case 'unselect-block': { 
-            $(`#${msg.id}`).removeClass("block-selected");
+                    break;
+                } 
+                case 'unselect-block': { 
+                    $(`#${msg.id}`).removeClass("block-selected");
 
-            break; 
-        } 
-        case 'CONSOLE_UPDATED': { 
-            console.log('Output vai ser atualizado...');
-            Object.keys(this.model.blocks).forEach((key) => {
-                const block = this.model.blocks[key];
-                if(block.id === msg.id) {
-                    this.model.blocks[key].properties.text = msg.text;
-                    $(`#${msg.id}`).remove();
-                    this.drawBlock(block);
+                    break; 
+                } */
+                case 'CONSOLE_UPDATED': { 
+                    console.log('Output vai ser atualizado...');
+                    Object.keys(this.model.blocks).forEach((key) => {
+                        const block = this.model.blocks[key];
+                        if(block.id === msg.id) {
+                            this.model.blocks[key].properties.text = msg.text;
+                            $(`#${msg.id}`).remove();
+                            this.drawBlock(block);
+                        }
+                    });
+
+                    break;
                 }
-            });    
+                
+                default: {
+                    break;
+                }
+            }
+        });
 
-            break; 
-        } 
-        default: {
-            break; 
-        } 
-     } 
+        var _self = this;
+        document.addEventListener("keydown", function(event) {
+            let key = event.key || event.keyCode;
 
-     var _self = this;
-     document.addEventListener("keydown", function(event) {
-        let key = event.key || event.keyCode;
+            if (key === 'l' || key === 'L') {        
+                const selectedBlocks = $("#diagram").find('.block-selected');
+                const size = Object.keys(_self.selectedBlocks).length;            
 
-        if (key === 'l' || key === 'L') {        
-            const selectedBlocks = $("#diagram").find('.block-selected');
-            const size = Object.keys(_self.selectedBlocks).length;            
+                if(size == 2) {
+                    const firstBlock = _self.selectedBlocks[0];
+                    const secondBlock = _self.selectedBlocks[1];
 
-            if(size == 2) {
-                const firstBlock = _self.selectedBlocks[0];
-                const secondBlock = _self.selectedBlocks[1];
+                    backend.send('CREATE_CONNECTION', { from: parseInt(firstBlock.id) , to: parseInt(secondBlock.id)});
+                    console.log('Creating link... ' + firstBlock.id + '->' + secondBlock.id);
+                    event.stopPropagation();                
+                } 
+            }
+        });
+    }
 
-                backend.send('CREATE_CONNECTION', { from: parseInt(firstBlock.id) , to: parseInt(secondBlock.id)});
-                console.log('Creating link... ' + firstBlock.id + '->' + secondBlock.id);
-                event.stopPropagation();                
-            } 
-        }
-    });
+    triggerPositionChanged(block) {
+        (block.outputs || []).concat(block.inputs || []).forEach(node => $(`#${node.id}`).trigger(`positionChanged`));
+    }
 
+    drawBlock(block) {
 
-    });
-  }
+        // Make sure some sensible defaults exist
+        if (!block.geom) block.geom = {};
 
-  triggerPositionChanged(block) {
-      (block.outputs || []).concat(block.inputs || []).forEach(node => $(`#${node.id}`).trigger(`positionChanged`));
-  }
+        // Extract useful stuff about the block
+        let temp_type = {}
+        this.model.types.forEach((elem) => {
+            if (elem.id === block.type) temp_type = elem;
+        });
+        const type = temp_type || {};
 
-  drawBlock(block) {
+        const geometry = block.geom;
+        const properties = block.properties || {};
 
-      // Make sure some sensible defaults exist
-      if (!block.geom) block.geom = {};
+        // Render
+        const inputs = (block.inputs || []).map(node => `<li id="${node.id}" class='left-node'></li>`).join(`\n`);
+        const outputs = (block.outputs || []).map(node => `<li id="${node.id}" class="right-node"></li>`).join(`\n`);
 
-      // Extract useful stuff about the block
-      let temp_type = {}
-      this.model.types.forEach((elem) => {
-          if(elem.id === block.type) temp_type = elem;
-      });
-      const type = temp_type || {};
-
-      const geometry = block.geom;
-      const properties = block.properties || {};
-
-      // Render
-      const inputs = (block.inputs || []).map(node => `<li id="${node.id}" class='left-node'></li>`).join(`\n`);
-      const outputs = (block.outputs || []).map(node => `<li id="${node.id}" class="right-node"></li>`).join(`\n`);
-
-      $("#diagram").append(`
-      <span id="${block.id}" class="block ${geometry.expanded?"block-expanded":""}">
+        $("#diagram").append(`
+      <span id="${block.id}" class="block ${geometry.expanded ? "block-expanded" : ""}">
         <ul class="block-left-connectors">${inputs}</ul>
         <div class="block-content ${type.style}">
           <div class="block-header">
@@ -106,56 +105,64 @@ class ModelView {
         <ul class="block-right-connectors">${outputs}</ul>
       </span>`);
 
-      const blockDiv = $(`#${block.id}`);
-      const toggleDiv = $(`#${block.id}-toggle`);
-      const bodyDiv = blockDiv.find(`.block-body`);
+        const blockDiv = $(`#${block.id}`);
+        const toggleDiv = $(`#${block.id}-toggle`);
+        const bodyDiv = blockDiv.find(`.block-body`);
 
-      if(geometry.x < 200)
-            blockDiv.css({ top: geometry.y, left: geometry.x+200 });
+        if (geometry.x < 200)
+            blockDiv.css({ top: geometry.y, left: geometry.x + 200 });
         else
             blockDiv.css({ top: geometry.y, left: geometry.x });
 
-      if (geometry.width) bodyDiv.css({width: geometry.width});
-      if (geometry.height) bodyDiv.css({height: geometry.height});
-      if (properties.text) bodyDiv.append(`<p>${properties.text}</p>`);
-      if (block.type == 'input') bodyDiv.append('<div class="block-input-options"><input type="checkbox">Enabled</div>');
+        if (geometry.width) bodyDiv.css({width: geometry.width});
+        if (geometry.height) bodyDiv.css({height: geometry.height});
+        if (properties.text) bodyDiv.append(`<p>${properties.text}</p>`);
+        if (block.type == 'input') bodyDiv.append('<div class="block-input-options"><input type="checkbox">Enabled</div>');
 
-      const enabledCheckbox = bodyDiv.find(`.block-input-options`).find('input:checkbox:first');
-      if (properties.enabled) enabledCheckbox.prop('checked', true);
+        const enabledCheckbox = bodyDiv.find(`.block-input-options`).find('input:checkbox:first');
+        if (properties.enabled) enabledCheckbox.prop('checked', true);
 
-      blockDiv.draggable({
-          grid: config.grid,
-          drag: (event, ui) => {
-              block.geom.y = ui.position.top;
-              block.geom.x = ui.position.left;
-              this.triggerPositionChanged(block);
-              event.stopPropagation();
-          }
-      });
-      
-      // Reference to modelview
-      
-       var handler = function(event){
+        let handler_block = function (event) {
             let key = event.key || event.keyCode;
-           if(key === 'Delete'){
-                console.log("Delete "+block.id)    
-                //backend.send('DELETE_BLOCK', { id: block.id });
-            } 
+            if (key === 'Delete') {
+                console.log("Delete " + block.id)
+                backend.send('DESTROY_BLOCK', { id: block.id });
+            }
         }
+
+        blockDiv.draggable({
+            grid: config.grid,
+            drag: (event, ui) => {
+                block.geom.y = ui.position.top;
+                block.geom.x = ui.position.left;
+                this.triggerPositionChanged(block);
+                //stupid but...
+                removeEventListener('keydown', handler_block);
+                event.stopPropagation();
+            }
+        });
+
+        backend.on('DOMAIN_EVENT', (topic, msg) => {
+            if (msg.event === 'DESTROYED_BLOCK') {
+                removeEventListener('keydown', handler_block);
+            }
+        });
 
         blockDiv.click(() => {
             blockDiv.toggleClass("block-selected");
             let isSelected = blockDiv[0].classList.contains('block-selected')
 
-            if(isSelected) {
-                addEventListener('keydown', handler);
+            console.log(isSelected + " block "+block.id);
+
+            if (isSelected) {
+                addEventListener('keydown', handler_block); 
 
                 // This list is needed because of the selection order
                 const index = Object.keys(this.selectedBlocks).length;
                 this.selectedBlocks[index] = block;
             }
             else {
-                removeEventListener('keydown', handler);
+                removeEventListener('keydown', handler_block);
 
                 let index = -1;
                 Object.keys(this.selectedBlocks).forEach((key) => {
@@ -165,12 +172,10 @@ class ModelView {
                     }
                 });   
                 if(index != -1) delete this.selectedBlocks[index];
-            }  
+            }
+
+            event.stopPropagation();
         });
-
-       // blockDiv.blur(() => blockDiv.removeClass('block-selected'));
-
-      //blockDiv.click(() => blockDiv.toggleClass("block-selected"));
 
       blockDiv.dblclick(() => {
           blockDiv[0].getElementsByClassName('blockName')[0].contentEditable = "True"

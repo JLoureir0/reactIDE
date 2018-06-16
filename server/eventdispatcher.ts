@@ -24,13 +24,15 @@ class EventDispatcher {
     actionBus.on('CHANGE_BLOCK_OUTPUTS', o => model.changeBlockOutputs(o));
     actionBus.on('CREATE_CONNECTION', o => model.createConnection(o));
     actionBus.on('CREATE_LINK', o => model.createLink(o));
+    actionBus.on('DESTROY_LINK', o => model.destroyLink(o));
     actionBus.on('CREATE_TYPE', o => model.createType(o));
     actionBus.on('COMMIT', () => model.commit(path));
 
     // MqttDispatcher
     actionBus.on('CHANGE_BLOCK_INPUTS', block => mqttRouter.subscribeInputNodes(block));
     actionBus.on('CHANGE_BLOCK_OUTPUTS', block => mqttRouter.subscribeOutputNodes(block));
-    actionBus.on('CREATE_LINK', link => mqttRouter.createLink(link))
+    actionBus.on('CREATE_LINK', link => mqttRouter.createLink(link));
+    actionBus.on('DESTROY_LINK', link => mqttRouter.destroyLink(link));
   }
 }
 

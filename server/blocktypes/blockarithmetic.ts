@@ -45,12 +45,12 @@ class BlockArithmetic extends Block {
             this.publishFromOutputs(res.toString());
         } else {
             //if map is missing any inputs -> pull from any missing inputs
-            for(let i = 0; i < this.Inputs.length; i++){
-                if(this.inputsMap.get(this.Inputs[i].id) == undefined){
+            for (let i = 0; i < this.Inputs.length; i++) {
+                if (this.inputsMap.get(this.Inputs[i].id) == undefined) {
                     this.publishFromInput(this.Inputs[i].id, Messages.pullInputs());
                 }
             }
-        }  
+        }
     }
 
     private makeOperation(res: string, value :string) : string {
@@ -80,6 +80,38 @@ class BlockArithmetic extends Block {
             case "/": return String(resNumber / valueNumber);
             default: return res;
         }
+    }
+
+    public deleteInput(id: string): boolean {
+        let node = this.inputsMap.get(id);
+        if (node === undefined)
+            return false;
+
+        this.deleteInputMap(id);
+        //this.inputsMap.delete(id);
+        super.deleteInput(id);
+
+        return true;
+    }
+
+    /**
+     * Delete nojento porque o tsMap nao funciona
+     */
+    private deleteInputMap(node_name: string) {
+        let temp_inputs: TSMAP<string, blockState> = new TSMAP();
+        let values = this.inputsMap.values();
+        let keys = this.inputsMap.keys();
+
+        for (let index = 0; index < keys.length; index++) {
+            const k = keys[index];
+            const v = values[index];
+
+            if (k !== node_name) {
+                temp_inputs.set(k, v);
+            }
+        }
+        this.inputsMap.clear();
+        this.inputsMap = temp_inputs;
     }
 }
 
