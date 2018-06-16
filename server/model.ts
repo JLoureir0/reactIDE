@@ -110,6 +110,39 @@ class Model {
    * 
    * @param blockInfo 
    */
+  public createConnection(blockInfo: { from: number, to: number }) {
+    const lastNodeID:number = this.getLastNodeID();
+    const nodeFrom = 'node_' + (lastNodeID + 1);
+    const nodeTo = 'node_' + (lastNodeID + 2);
+    const blockFrom: Block = this.blocks.get(blockInfo.from);
+    const blockTo: Block = this.blocks.get(blockInfo.to);
+
+    const newInputs = blockTo.Inputs;
+    newInputs.push({ id: nodeFrom });
+    const newOutputs = blockFrom.Outputs;
+    newOutputs.push({ id: nodeTo });
+
+    let events = [];
+
+    let ev = { event: 'CHANGE_BLOCK_INPUTS', data: { id: blockTo.Id, inputs: newInputs }};
+    events.push(ev);
+
+    let ev2 = { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: blockFrom.Id, outputs: newOutputs }};
+    events.push(ev2);
+
+    const linkID:number = this.connections.size + 1;
+
+    let ev3 = { event: 'CREATE_LINK', data: { id: linkID, from: { node: nodeFrom }, to: {node: nodeTo} } };
+    events.push(ev3);
+
+    this.domainEventBus.replay(events);
+    //this.domainEventBus.publish("CONNECTION_CREATED", blockInfo);
+  }
+
+  /**
+   * 
+   * @param blockInfo 
+   */
   public changeBlockInputs(blockInfo: { id: number, inputs: Array<{ id: string }> }) {
     this.overrideBlockDetails(blockInfo, 'inputs', 'BLOCK_INPUTS_CHANGED');
   }
@@ -128,11 +161,6 @@ class Model {
    */
   public createLink(link: jsonLink) {
     this.connections.set(link.id, link);
-
-    if (link.id == 0) {
-      link.id = this.connections.size + 1;
-    }
-
     this.domainEventBus.publish('LINK_CREATED', link);
   }
 
@@ -200,8 +228,31 @@ class Model {
   /**
    * 
    */
-  public getLastBlockID() {
+  public getLastBlockID(): number {
     return this.blocks.size;
+  }
+
+  /**
+   * Get last node id
+   */
+  public getLastNodeID(): number {
+    const size = this.connections.size;
+    let i = 1;
+    let lastNode = -1;
+    for(i; i < size; i++) {
+      const connection = this.connections.get(i);
+      const nodeFrom = parseInt(connection.from.node.split('_')[1]);
+      const nodeTo = parseInt(connection.to.node.split('_')[1]);
+
+      if(nodeFrom > lastNode) {
+        lastNode = nodeFrom;
+      }
+      if(nodeTo > lastNode) {
+        lastNode = nodeTo;
+      }
+    }
+
+    return lastNode;
   }
 }
 

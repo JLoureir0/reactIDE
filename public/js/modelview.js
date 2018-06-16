@@ -2,6 +2,7 @@ class ModelView {
   constructor(backend) {
     this.model = {};
     this.backend = backend;
+    this.selectedBlocks = {};
 
     paper.setup("myCanvas");
     paper.view.autoUpdate = true;
@@ -41,6 +42,25 @@ class ModelView {
             break; 
         } 
      } 
+
+     var _self = this;
+     document.addEventListener("keydown", function(event) {
+        let key = event.key || event.keyCode;
+
+        if (key === 'l' || key === 'L') {        
+            const selectedBlocks = $("#diagram").find('.block-selected');
+            const size = Object.keys(_self.selectedBlocks).length;            
+
+            if(size == 2) {
+                const firstBlock = _self.selectedBlocks[0];
+                const secondBlock = _self.selectedBlocks[1];
+
+                backend.send('CREATE_CONNECTION', { from: parseInt(firstBlock.id) , to: parseInt(secondBlock.id)});
+                console.log('Creating link... ' + firstBlock.id + '->' + secondBlock.id);
+                event.stopPropagation();                
+            } 
+        }
+    });
 
 
     });
@@ -112,8 +132,45 @@ class ModelView {
               event.stopPropagation();
           }
       });
+      
+      // Reference to modelview
+      
+       var handler = function(event){
+            let key = event.key || event.keyCode;
+           if(key === 'Delete'){
+                console.log("Delete "+block.id)    
+                //backend.send('DELETE_BLOCK', { id: block.id });
+            } 
+        }
 
-      blockDiv.click(() => blockDiv.toggleClass("block-selected"));
+        blockDiv.click(() => {
+            blockDiv.toggleClass("block-selected");
+            let isSelected = blockDiv[0].classList.contains('block-selected')
+
+            if(isSelected) {
+                addEventListener('keydown', handler);
+
+                // This list is needed because of the selection order
+                const index = Object.keys(this.selectedBlocks).length;
+                this.selectedBlocks[index] = block;
+            }
+            else {
+                removeEventListener('keydown', handler);
+
+                let index = -1;
+                Object.keys(this.selectedBlocks).forEach((key) => {
+                    if(block.id === this.selectedBlocks[key].id) {
+                        index = key;
+                        return;
+                    }
+                });   
+                if(index != -1) delete this.selectedBlocks[index];
+            }  
+        });
+
+       // blockDiv.blur(() => blockDiv.removeClass('block-selected'));
+
+      //blockDiv.click(() => blockDiv.toggleClass("block-selected"));
 
       blockDiv.dblclick(() => {
           blockDiv[0].getElementsByClassName('blockName')[0].contentEditable = "True"
@@ -125,9 +182,6 @@ class ModelView {
       });
 
       toggleDiv.click((event) => {
-          //toggleDiv.toggleClass("fa-caret-right").toggleClass("fa-caret-down");
-          //blockDiv.toggleClass("block-expanded");
-
           block.geom.expanded = !block.geom.expanded;
 
           changeBlockGeometry(block.id, block.geom.x, block.geom.y, block.geom.expanded);
