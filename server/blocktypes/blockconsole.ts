@@ -13,6 +13,9 @@ class BlockConsole extends Block {
     }
 
     public run(topic: string, message: string){
+
+        super.run(topic, message);
+        
         if(MessagesHandler.getMessageType(topic) == MessagesHandler.MessageType.REACHEDMYINPUT){
             // Only notify client if the value has changed
             if(this.Properties['text'] != message) {

@@ -7,10 +7,10 @@ import { Block } from './block';
 import TsMap from "ts-map";
 import { EventBus } from './eventbus';
 
-type jsonLink = {id: number, from: {node: string}, to: {node: string}};
-type jsonType = {id: string, icon?: string, style?: string};
-type jsonBlock = {id: number, type: string, properties: {name:string, text?:string, enabled?:boolean}};
-type jsonCompleteBlock = {id: number, type?: string, properties?: {name:string, text?:string, enabled?:boolean}, geom?: {x: number, y: number, expanded?:boolean}, inputs?: Array<{id: string}>, outputs?: Array<{id: string}>};
+type jsonLink = { id: number, from?: { node: string }, to?: { node: string } };
+type jsonType = { id: string, icon?: string, style?: string };
+type jsonBlock = { id: number, type: string, properties: { name: string, text?: string, enabled?: boolean } };
+type jsonCompleteBlock = { id: number, type?: string, properties?: { name: string, text?: string, enabled?: boolean }, geom?: { x: number, y: number, expanded?: boolean }, inputs?: Array<{ id: string }>, outputs?: Array<{ id: string }> };
 
 
 /**
@@ -55,8 +55,57 @@ class Model {
    * @param blockInfo 
    */
   public destroyBlock(blockInfo: jsonBlock) {
-    this.blocks.delete(blockInfo.id);
+    //objetivo, percorrer todos os inputs e outputs, descobrir quais são os id's desses links e fazer destroy
+    this.destroyBlockLinks(blockInfo.id);
+    //delete block
+    this.deleteBlock(blockInfo.id);
+    //this.blocks.delete(blockInfo.id);
     this.domainEventBus.publish('BLOCK_DESTROYED', blockInfo);
+  }
+
+  /**
+   * 
+   * @param block_id 
+   */
+  private destroyBlockLinks(block_id: number) {
+    let block: Block = this.blocks.get(block_id);
+    if(block === undefined) return;
+
+    block.Inputs.forEach(inp => {
+      //encontrar o link que tem este inp.id nos seus 'to'
+      let id: number = this.findToLink(inp.id);
+      this.destroyLink({ id: id });
+    });
+
+    block.Outputs.forEach(inp => {
+      //encontrar o link que tem este inp.id nos seus 'from'
+      let id: number = this.findFromLink(inp.id);
+      this.destroyLink({ id: id });
+    });
+
+  }
+
+  /**
+   * 
+   * @param name 
+   */
+  private findToLink(name: string): number {
+    let array = this.connections.values();
+    for (let index = 0; index < array.length; index++) {
+      const element = array[index];
+      if (element.to.node === name) return element.id;
+    }
+  }
+
+  /**
+   * 
+   */
+  private findFromLink(name: string): number {
+    let array = this.connections.values();
+    for (let index = 0; index < array.length; index++) {
+      const element = array[index];
+      if (element.from.node === name) return element.id;
+    }
   }
 
   /**
@@ -92,7 +141,7 @@ class Model {
    * 
    * @param blockInfo 
    */
-  public changeBlockGeometry(blockInfo: { id: number, geom: { x: number, y: number, expanded?:boolean } }) {
+  public changeBlockGeometry(blockInfo: { id: number, geom: { x: number, y: number, expanded?: boolean } }) {
     this.overrideBlockDetails(blockInfo, 'geom', 'BLOCK_GEOMETRY_CHANGED');
   }
 
@@ -104,6 +153,39 @@ class Model {
     this.overrideBlockDetails(blockInfo, 'properties', 'BLOCK_PROPERTIES_CHANGED');
     const block: Block = this.blocks.get(blockInfo.id);
     block.run("client", "work")
+  }
+
+  /**
+   * 
+   * @param blockInfo 
+   */
+  public createConnection(blockInfo: { from: number, to: number }) {
+    const lastNodeID:number = this.getLastNodeID();
+    const nodeFrom = 'node_' + (lastNodeID + 1);
+    const nodeTo = 'node_' + (lastNodeID + 2);
+    const blockFrom: Block = this.blocks.get(blockInfo.from);
+    const blockTo: Block = this.blocks.get(blockInfo.to);
+
+    const newInputs = blockTo.Inputs;
+    newInputs.push({ id: nodeFrom });
+    const newOutputs = blockFrom.Outputs;
+    newOutputs.push({ id: nodeTo });
+
+    let events = [];
+
+    let ev = { event: 'CHANGE_BLOCK_INPUTS', data: { id: blockTo.Id, inputs: newInputs }};
+    events.push(ev);
+
+    let ev2 = { event: 'CHANGE_BLOCK_OUTPUTS', data: { id: blockFrom.Id, outputs: newOutputs }};
+    events.push(ev2);
+
+    const linkID:number = this.connections.size + 1;
+
+    let ev3 = { event: 'CREATE_LINK', data: { id: linkID, from: { node: nodeFrom }, to: {node: nodeTo} } };
+    events.push(ev3);
+
+    this.domainEventBus.replay(events);
+    //this.domainEventBus.publish("CONNECTION_CREATED", blockInfo);
   }
 
   /**
@@ -128,11 +210,6 @@ class Model {
    */
   public createLink(link: jsonLink) {
     this.connections.set(link.id, link);
-
-    if (link.id == 0) {
-      link.id = this.connections.size + 1;
-    }
-
     this.domainEventBus.publish('LINK_CREATED', link);
   }
 
@@ -150,7 +227,25 @@ class Model {
    * @param link 
    */
   public destroyLink(link: jsonLink) {
-    this.connections.delete(link.id);
+    let link_info = this.connections.get(link.id);
+    if (link_info === undefined) return;
+
+    let from: string = link_info.from.node;
+    let to: string = link_info.to.node;
+
+    let hasF, hasT: boolean = false;
+    for (let index = 0; index < this.blocks.size; index++) {
+      const block = this.blocks.values()[index];
+
+      if (!hasF) hasF = block.deleteInput(to);
+      if (!hasT) hasT = block.deleteOutput(from);
+
+      //ja encontrou os 2
+      if (hasF && hasT) break;
+    }
+
+    this.deleteLink(link.id);
+    //this.connections.delete(link.id);
     this.domainEventBus.publish('LINK_DESTROYED', link);
   }
 
@@ -200,8 +295,67 @@ class Model {
   /**
    * 
    */
-  public getLastBlockID() {
+  public getLastBlockID(): number {
     return this.blocks.size;
+  }
+
+  /**
+   * Get last node id
+   */
+  public getLastNodeID(): number {
+    const size = this.connections.size;
+    let i = 1;
+    let lastNode = -1;
+    for(i; i < size; i++) {
+      const connection = this.connections.get(i);
+      const nodeFrom = parseInt(connection.from.node.split('_')[1]);
+      const nodeTo = parseInt(connection.to.node.split('_')[1]);
+
+      if(nodeFrom > lastNode) {
+        lastNode = nodeFrom;
+      }
+      if(nodeTo > lastNode) {
+        lastNode = nodeTo;
+      }
+    }
+
+    return lastNode;
+  }
+
+  /**
+   * funcao nojenta porque nao funciona o delete do map
+   */
+  private deleteBlock(id: number) {
+    let temp_blocks: TsMap<number, Block> = new TsMap();
+    let x = this.blocks.values()
+
+    for (let index = 0; index < x.length; index++) {
+      const element = x[index];
+
+      if (element.Id !== id) {
+        temp_blocks.set(element.Id, element);
+      }
+    }
+    this.blocks.clear();
+    this.blocks = temp_blocks;
+  }
+
+  /**
+ * funcao nojenta porque nao funciona o delete do map
+ */
+  private deleteLink(id: number) {
+    let temp_links: TsMap<number, jsonLink> = new TsMap();
+    let x = this.connections.values();
+
+    for (let index = 0; index < x.length; index++) {
+      const element = x[index];
+
+      if (element.id !== id) {
+        temp_links.set(element.id, element);
+      }
+    }
+    this.connections.clear();
+    this.connections = temp_links;
   }
 }
 
